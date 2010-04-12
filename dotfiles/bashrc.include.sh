@@ -82,6 +82,9 @@ function setup_env
 
   # Setup ls --color for black background.
   export LSCOLORS=Exfxcxdxbxegedabagacad
+
+  # I'm a vi guy
+  export EDITOR=vi
 }
 
 function setup_common
