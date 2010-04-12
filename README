@@ -13,6 +13,11 @@ To clone this repository (Read-Only HTTP):
 
 $ git clone http://github.com/0xfe/evil.git
 
+The personalization scripts here expect this repo to be in ~/s. So you
+might need to do the following:
+
+$ ln -s /path/to/evil.git/repo ~/s
+
 To pull:
 
 $ git pull origin master

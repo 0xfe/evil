@@ -5,9 +5,13 @@ To include, simply symlink the relevant dotfile into ~.
 
 $ ln -s ~/s/dotfiles/vimrc ~/.vimrc
 
------------
+The Expectation
+---------------
 
-For bashrc:
+This repo is expected in ~/s
+
+Setup for bashrc
+----------------
 
 Create a .bashrc in ~ with the following contents:
 
