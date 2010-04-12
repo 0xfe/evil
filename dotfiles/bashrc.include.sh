@@ -35,26 +35,62 @@ function color_prompt
 
   local u_color=$purple
   id -u > /dev/null 2>&1 &&           #Cross-platform hack.
-      if [ `id -u` -eq 0 ] ; then
-          local u_color=$yellow
-      fi
 
-  PS1="$blue> $current_tty $u_color\u$brown@${purple}\h$brown:$light_blue\w\n$blue> $light_red\$? $cyan\t $brown"'\$'"$none "
+  if [ `id -u` -eq 0 ] ; then
+    local u_color=$yellow
+  fi
+
+  PS1="$light_blue> $current_tty $u_color\u$brown@${purple}\h$brown:$light_blue\w\n$light_blue> $light_red\$? $cyan\t $brown"'\$'"$none "
 
   PS2="$dark_gray>$none "
 }
 
-function setup_common
+function set_title
+{
+  # If this is an xterm set the title to user@host:dir
+  case "$TERM" in
+  xterm*|rxvt*)
+      PROMPT_COMMAND='echo -ne "\033]0;${USER}@${HOSTNAME}: ${PWD/$HOME/~}\007"'
+      ;;
+  *)
+      ;;
+  esac
+}
+
+function setup_aliases
 {
   # Useful aliases
   alias ls='ls -G'
   alias ll='ls -l'
+}
 
+function setup_env
+{
   # CDPATH makes life easier
-  CDPATH=.:..:../..:~
-  export CDPATH
+  export CDPATH=.:..:../..:~
 
+  # don't put duplicate lines in the history. See bash(1) for more options
+  export HISTCONTROL=ignoredups
+  # ... and ignore same sucessive entries.
+  export HISTCONTROL=ignoreboth
+
+  # check the window size after each command and, if necessary,
+  # update the values of LINES and COLUMNS.
+  shopt -s checkwinsize
+
+  # make less more friendly for non-text input files, see lesspipe(1)
+  [ -x /usr/bin/lesspipe ] && eval "$(lesspipe)"
+}
+
+function setup_common
+{
+  # If not running interactively, don't do anything
+  [ -z "$PS1" ] && return
+
+  setup_aliases
+  setup_env
   color_prompt
+  set_title
 }
 
 function setup_mac
