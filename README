@@ -13,6 +13,10 @@ To clone this repository (Read-Only HTTP):
 
 $ git clone http://github.com/0xfe/evil.git
 
+To pull:
+
+$ git pull origin master
+
 ------------------------------------
 
 $ git config --global user.name "Your Name Comes Here"

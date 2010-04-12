@@ -80,6 +80,9 @@ function setup_env
 
   # make less more friendly for non-text input files, see lesspipe(1)
   [ -x /usr/bin/lesspipe ] && eval "$(lesspipe)"
+
+  # Setup ls --color for black background.
+  export LSCOLORS=Exfxcxdxbxegedabagacad
 }
 
 function setup_common
