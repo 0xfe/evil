@@ -1,0 +1,2 @@
+set runtimepath=~/s/dotfiles/vim_local,$VIMRUNTIME
+source ~/s/dotfiles/vim_local/vimrc
