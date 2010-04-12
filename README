@@ -20,7 +20,7 @@ $ ln -s /path/to/evil.git/repo ~/s
 
 To pull:
 
-$ git pull origin master
+$ git pull origin master (if default remote isn't setup)
 
 ------------------------------------
 
