@@ -1,0 +1,15 @@
+My Dotfiles.
+-----------
+
+To include, simply symlink the relevant dotfile into ~.
+
+$ ln -s ~/s/dotfiles/vimrc ~/.vimrc
+
+-----------
+
+For bashrc:
+
+Create a .bashrc in ~ with the following contents:
+
+  . ~/s/dotfiles/bashrc.include.sh
+  setup_mac (or setup_whateveryouwish)
