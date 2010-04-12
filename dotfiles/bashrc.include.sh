@@ -60,7 +60,6 @@ function set_title
 function setup_aliases
 {
   # Useful aliases
-  alias ls='ls -G'
   alias ll='ls -l'
 }
 
@@ -98,6 +97,7 @@ function setup_common
 
 function setup_mac
 {
+  alias ls='ls -G'
   setup_common
 
   PATH=$HOME/Local/bin:/opt/local/bin:/usr/local/bin:/opt/local/sbin:$PATH
@@ -106,5 +106,6 @@ function setup_mac
 
 function setup_linux
 {
+  alias ls='ls --color'
   setup_common
 }
