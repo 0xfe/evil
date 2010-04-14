@@ -1,6 +1,29 @@
 # bash includes.
 # Mohit Cheppudira <mohit@muthanna.com>
 
+# Returns "*" if the current git branch is dirty.
+function parse_git_dirty {
+  [[ $(git diff --shortstat 2> /dev/null | tail -n1) != "" ]] && echo "*"
+}
+
+# Returns "|shashed:N" where N is the number of stashed states (if any).
+function parse_git_stash {
+  local stash=`expr $(git stash list 2>/dev/null| wc -l)`
+  if [ "$stash" != "0" ]
+  then
+    echo "|stashed:$stash"
+  fi
+}
+
+# Get the current git branch name (if available)
+git_prompt() {
+  local ref=$(git symbolic-ref HEAD 2>/dev/null | cut -d'/' -f3)
+  if [ "$ref" != "" ]
+  then
+    echo "($ref$(parse_git_dirty)$(parse_git_stash)) "
+  fi
+}
+
 # A plain (colorless) prompt.
 function plain_prompt
 {
@@ -40,7 +63,7 @@ function color_prompt
     local u_color=$yellow
   fi
 
-  PS1="$light_blue> $current_tty $u_color\u$brown@${purple}\h$brown:$light_blue\w\n$light_blue> $light_red\$? $cyan\t $brown"'\$'"$none "
+  PS1="$light_blue> $current_tty $u_color\u$brown@${purple}\h$brown:$light_blue\w\n$light_blue> $light_red\$? $cyan\$(git_prompt)$brown"'\$'"$none "
 
   PS2="$dark_gray>$none "
 }
@@ -102,10 +125,8 @@ function setup_common
 function setup_mac
 {
   alias ls='ls -G'
+  export PATH=$HOME/Local/bin:/opt/local/bin:/usr/local/bin:/opt/local/sbin:$PATH
   setup_common
-
-  PATH=$HOME/Local/bin:/opt/local/bin:/usr/local/bin:/opt/local/sbin:$PATH
-  export PATH
 }
 
 function setup_linux
