@@ -28,7 +28,7 @@ function parse_git_unmerged {
 # Returns "|unpushed:N" where N is the number of unpushed local and remote
 # branches (if any).
 function parse_git_unpushed {
-  local unpushed=`expr $( (git branch --no-color -a --contains HEAD; git branch --no-color -a) | sort | uniq -u | wc -l )`
+  local unpushed=`expr $( (git branch --no-color -r --contains HEAD; git branch --no-color -r) | sort | uniq -u | wc -l )`
   if [ "$unpushed" != "0" ]
   then
     echo "|unpushed:$unpushed"
