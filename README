@@ -1,5 +1,5 @@
 Evil Tomato - Mohit Cheppudira <mohit@muthanna.com>
-A portable shared shell environment.
+A versioned portable roaming shell environment.
 
 Setup
 -----
@@ -24,7 +24,8 @@ source $EVIL_HOME/dotfiles/bashrc.include.sh
 setup_common
 
 Alternatively, you can keep custom .bashrc files for each of your machines in
-dotfiles/ and source them in from (or symlink to) your .bashrc.
+dotfiles/ and source them in from (or symlink to) your .bashrc. Make sure that
+these custom files source in bashrc.include.sh.
 
 source ~/c/env.sh
 source $EVIL_HOME/dotfiles/bashrc.`hostname`

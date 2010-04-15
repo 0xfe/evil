@@ -1,0 +1,2 @@
+# m h  dom mon dow   command
+*/15 * * * * ~/c/cron/update_local_repositories.sh >/dev/null 2>&1
