@@ -45,6 +45,9 @@ function setup_env
 
   # I'm a vi guy
   export EDITOR=vi
+
+  # Add local scripts to path
+  export PATH=~/s/bin:$PATH
 }
 
 function setup_common
