@@ -15,6 +15,15 @@ function parse_git_stash {
   fi
 }
 
+# Returns "+" if there are unmerged branches.
+function parse_git_unmerged {
+  local merged=`expr $(git branch -a --no-merged 2>/dev/null| wc -l)`
+  if [ "$merged" != "0" ]
+  then
+    echo "|unmerged:$stash"
+  fi
+}
+
 # Get the current git branch name (if available)
 git_prompt() {
   local ref=$(git symbolic-ref HEAD 2>/dev/null | cut -d'/' -f3)
