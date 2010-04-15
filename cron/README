@@ -1,0 +1,3 @@
+The scripts here should be added to your crontab. Mine is:
+
+0,15,30,45 * * * * ~/s/cron/update_local_repositories.sh >/dev/null 2>&1
