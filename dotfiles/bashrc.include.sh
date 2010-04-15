@@ -1,8 +1,15 @@
-# bash includes.
+# Include file for your local bashrc.
 # Mohit Cheppudira <mohit@muthanna.com>
+#
+# EVIL_HOME needs to be defined before you source in this file. You can do this
+# by sourcing in env.sh before including this script
+#
+#   source ~s/env.sh
+#   source $EVIL_HOME/bashrc.include.sh
+#   setup_linux
 
-# Include prompt support functions
-. ~/s/dotfiles/scripts/prompt.sh
+# Include prompt support functions.
+source $EVIL_HOME/dotfiles/scripts/prompt.sh
 
 function set_title
 {
@@ -60,6 +67,10 @@ function setup_common
   color_prompt
   set_title
 }
+
+# -----------------------------------------
+# Add your local shared customizations here
+# -----------------------------------------
 
 function setup_mac
 {

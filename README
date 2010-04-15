@@ -1,97 +1,37 @@
-Evil Repository - Profiles, scripts, and other cruft.
-----------------------------------------------------
+Evil Tomato - Mohit Cheppudira <mohit@muthanna.com>
+A portable shared shell environment.
 
 Setup
 -----
 
-The personalization scripts here expect this repo to be in ~/s. So you
-might need to do the following:
+1) Clone this repo (You may want to fork it first.)
 
-$ ln -s /path/to/evil.git/repo ~/s
-
-dotfiles/ - Configuration files for vim, screen, bash, etc.
-cron/ - Scripts to add to your crontab.
-
-Configuration
--------------
-
-Some of the scripts need to know the list of Git repositories available. This
-is configured in GIT.conf.
-
-------------------------------------
-
-To clone this repository (Read/Write):
-
+Read/Write:
 $ git clone git@github.com:0xfe/evil.git
 
-To clone this repository (Read-Only HTTP):
-
+Read-Only HTTP:
 $ git clone http://github.com/0xfe/evil.git
 
-To pull:
+2) Set EVIL_HOME to the base directory of this repo env.sh.
 
-$ git pull origin master (if default remote isn't setup)
+export EVIL_HOME=~/s
 
-OR
+3) Source dotfiles/bashrc.include.sh into your bashrc. You can add your
+customizations to that file (e.g., in setup_mac).
 
-$ git config branch.master.merge master
-$ git config branch.master.remote origin
-$ git pull
+source ~/s/env.sh
+source $EVIL_HOME/dotfiles/bashrc.include.sh
+setup_mac
 
-------------------------------------
+4) Symlink to the other configuration files.
 
-$ git config --global user.name "Your Name Comes Here"
-$ git config --global user.email you@yourdomain.example.com
+$ ln -s $EVIL_HOME/dotfiles/screenrc .screenrc
+$ ln -s $EVIL_HOME/dotfiles/vimrc .vimrc
 
-$ git config --global color.diff auto
-$ git config --global color.status auto
-$ git config --global color.branch auto
+5) Add the relevant cronjobs to your crontab.
 
-------------------------------------
-Repository administration:
+$ crontab -e
+(Edit crontab)
 
-To bring the local working directory in sync with HEAD:
-
-$ git reset --hard HEAD
--------------------------------------
-
-Ignore list in .gitignore (in project root). Contents:
-
-# Lines starting with '#' are considered comments.
-# Ignore any file named foo.txt.
-foo.txt
-# Ignore (generated) html files,
-*.html
-# except foo.html which is maintained by hand.
-!foo.html
-# Ignore objects and archives.
-*.[oa]
-ruby_sess.*
-.*.swp
-.hi
-*.pyc
-
-------------------------------------
-
-Workflow:
-
-$ git branch newthingaby
-
-$ git branch
-  newthingaby
-* master
-
-$ git checkout newthingaby
-... do stuff ...
-
-$ git commit -a
-
-$ git checkout master
-
-$ git merge newthingaby
-
-(If conflicts, fix them, then submit.)
-
-$ git branch -d newthingaby
-
-$ git push
+$ crontab -l
+0,15,30,45 * * * * ~/s/cron/update_local_repositories.sh >/dev/null 2>&1

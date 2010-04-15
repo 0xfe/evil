@@ -9,13 +9,15 @@
 #
 # 0,15,30,45 * * * * ~/s/cron/update_local_repositories.sh >/dev/null 2>&1
 
-for dir in `cat ~/s/GIT.conf`
+source $EVIL_HOME/env.sh
+
+for dir in $EVIL_REPO_DIRS
 do
-  spath=~/$dir
-  if [ -d $spath ]
+  echo "Checking for $dir..."
+  if [ -d $dir ]
   then
-    echo "Updating $spath..."
-    cd $spath
+    echo "Updating $dir..."
+    cd $dir
     git fetch
   fi
 done

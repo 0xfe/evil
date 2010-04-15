@@ -2,17 +2,17 @@
 
 # This script checks the status of all repos configured in GIT.conf.
 
-. ~/s/dotfiles/scripts/prompt.sh
+source $EVIL_HOME/env.sh
+source $EVIL_HOME/dotfiles/scripts/prompt.sh
 
 OLDDIR=`pwd`
 
-for dir in `cat ~/s/GIT.conf`
+for dir in $EVIL_REPO_DIRS
 do
-  spath=~/$dir
-  if [ -d $spath ]
+  if [ -d $dir ]
   then
-    cd $spath
-    echo $spath: $(git_prompt)
+    cd $dir
+    echo $dir: $(git_prompt)
   fi
 done
 
