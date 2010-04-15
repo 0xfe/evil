@@ -29,7 +29,7 @@ function parse_git_unmerged {
 # branches (if any).
 function parse_git_unpushed {
   local unpushed=`expr $( (git branch --no-color -r --contains HEAD; \
-    git branch --no-color -r) | sort | uniq -u | wc -l )`
+    git branch --no-color -r) | grep -v HEAD | sort | uniq -u | wc -l )`
   if [ "$unpushed" != "0" ]
   then
     echo "|unpushed:$unpushed"
