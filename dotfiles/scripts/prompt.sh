@@ -18,7 +18,7 @@ function parse_git_stash {
 # Returns "|unmerged:N" where N is the number of unmerged local and remote
 # branches (if any).
 function parse_git_unmerged {
-  local unmerged=`expr $(git branch --no-color -a --no-merged | wc -l)`
+  local unmerged=`expr $(git branch --no-color -a --no-merged | grep -v HEAD | wc -l)`
   if [ "$unmerged" != "0" ]
   then
     echo "|unmerged:$unmerged"
