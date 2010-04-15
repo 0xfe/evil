@@ -93,6 +93,7 @@ function setup_aliases
 {
   # Useful aliases
   alias ll='ls -l'
+  alias stitle='screen -X title'
 }
 
 function setup_env
