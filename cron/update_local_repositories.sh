@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 # This script updates all local repositories by running "git fetch" on
 # them. Ideally, this is run with the git shell-prompt customizations
