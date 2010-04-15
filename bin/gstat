@@ -2,32 +2,31 @@
 
 # This script checks the status of the current git repo.
 
-function parse_git_dirty {
-  [[ $(git diff --shortstat 2> /dev/null | tail -n1) != "" ]] && echo "(dirty)"
-}
+source $EVIL_HOME/lib/evilgit.sh
 
 ref=$(git symbolic-ref HEAD 2>/dev/null | cut -d'/' -f3)
 
 if [ "$ref" != "" ]
 then
   unpushed=`(git branch --no-color -r --contains HEAD; \
-    git branch --no-color -r) | grep -v HEAD | sort | uniq -u`
-  unmerged=$(git branch --no-color -a --no-merged | grep -v HEAD)
-  stashed=$(git stash list)
+    git branch --no-color -r) | grep -v HEAD | sort | uniq -u 2>/dev/null`
+  unmerged=$(git branch --no-color -a --no-merged | grep -v HEAD 2>/dev/null)
+  stashed=$(git stash list 2>/dev/null)
 
-  echo Current branch: $ref $(parse_git_dirty)
+  echo Current branch: $ref"$(evil_git_dirty)"
 
   if [ "$unpushed" != "" ]
   then
     echo Unpushed branches:
-    echo $unpushed
+    (git branch --no-color -r --contains HEAD; git branch --no-color -r) \
+      | grep -v HEAD | sort | uniq -u
     echo
   fi
 
   if [ "$unmerged" != "" ]
   then
     echo Unmerged branches:
-    echo $unmerged
+    git branch --no-color -a --no-merged | grep -v HEAD
     echo
   fi
 
@@ -35,7 +34,7 @@ then
   if [ "$stashed" != "" ]
   then
     echo Stashed states:
-    echo $stashed
+    git stash list
     echo
   fi
 

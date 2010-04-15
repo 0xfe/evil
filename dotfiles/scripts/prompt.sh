@@ -1,49 +1,11 @@
 # Custom prompt with git support.
 # Mohit Cheppudira <mohit@muthanna.com>
 
-# Returns "*" if the current git branch is dirty.
-function parse_git_dirty {
-  [[ $(git diff --shortstat 2> /dev/null | tail -n1) != "" ]] && echo "*"
-}
+# Note: The Git support functions have been moved to /lib/evilgit.sh in:
+#
+#   http://github.com/0xfe/evil/raw/master/lib/evilgit.sh
 
-# Returns "|shashed:N" where N is the number of stashed states (if any).
-function parse_git_stash {
-  local stash=`expr $(git stash list 2>/dev/null| wc -l)`
-  if [ "$stash" != "0" ]
-  then
-    echo "|stashed:$stash"
-  fi
-}
-
-# Returns "|unmerged:N" where N is the number of unmerged local and remote
-# branches (if any).
-function parse_git_unmerged {
-  local unmerged=`expr $(git branch --no-color -a --no-merged | grep -v HEAD | wc -l)`
-  if [ "$unmerged" != "0" ]
-  then
-    echo "|unmerged:$unmerged"
-  fi
-}
-
-# Returns "|unpushed:N" where N is the number of unpushed local and remote
-# branches (if any).
-function parse_git_unpushed {
-  local unpushed=`expr $( (git branch --no-color -r --contains HEAD; \
-    git branch --no-color -r) | grep -v HEAD | sort | uniq -u | wc -l )`
-  if [ "$unpushed" != "0" ]
-  then
-    echo "|unpushed:$unpushed"
-  fi
-}
-
-# Get the current git branch name (if available)
-git_prompt() {
-  local ref=$(git symbolic-ref HEAD 2>/dev/null | cut -d'/' -f3)
-  if [ "$ref" != "" ]
-  then
-    echo "($ref$(parse_git_dirty)$(parse_git_stash)$(parse_git_unmerged)$(parse_git_unpushed)) "
-  fi
-}
+source $EVIL_HOME/lib/evilgit.sh
 
 # A plain (colorless) prompt.
 function plain_prompt
@@ -85,7 +47,7 @@ function color_prompt
   fi
 
   PS1="$light_blue> $current_tty $u_color\u$brown@${purple}\h$brown:\
-$light_blue\w\n$light_blue> $light_red\$? $cyan\$(git_prompt)\
+$light_blue\w\n$light_blue> $light_red\$? $cyan\$(evil_git_prompt)\
 $brown"'\$'"$none "
 
   PS2="$dark_gray>$none "

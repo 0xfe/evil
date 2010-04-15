@@ -4,7 +4,7 @@
 # EVIL_HOME needs to be defined before you source in this file. You can do this
 # by sourcing in env.sh before including this script
 #
-#   source ~s/env.sh
+#   source ~c/env.sh
 #   source $EVIL_HOME/bashrc.include.sh
 #   setup_linux
 
@@ -54,7 +54,7 @@ function setup_env
   export EDITOR=vi
 
   # Add local scripts to path
-  export PATH=~/s/bin:$PATH
+  export PATH=$EVIL_HOME/bin:$PATH
 }
 
 function setup_common

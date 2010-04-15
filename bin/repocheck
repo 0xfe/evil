@@ -3,7 +3,7 @@
 # This script checks the status of all repos configured in GIT.conf.
 
 source $EVIL_HOME/env.sh
-source $EVIL_HOME/dotfiles/scripts/prompt.sh
+source $EVIL_HOME/lib/evilgit.sh
 
 OLDDIR=`pwd`
 
@@ -12,7 +12,7 @@ do
   if [ -d $dir ]
   then
     cd $dir
-    echo $dir: $(git_prompt)
+    echo $dir: $(evil_git_prompt)
   fi
 done
 

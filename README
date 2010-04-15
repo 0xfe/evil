@@ -12,14 +12,14 @@ $ git clone git@github.com:0xfe/evil.git
 Read-Only HTTP:
 $ git clone http://github.com/0xfe/evil.git
 
-2) Set EVIL_HOME to the base directory of this repo env.sh.
+2) Edit env.sh and configure the tomato, most importantly setting EVIL_HOME.
 
-export EVIL_HOME=~/s
+export EVIL_HOME=~/c
 
 3) Source dotfiles/bashrc.include.sh into your bashrc. You can add your
 customizations to that file (e.g., in setup_mac).
 
-source ~/s/env.sh
+source ~/c/env.sh
 source $EVIL_HOME/dotfiles/bashrc.include.sh
 setup_mac
 
@@ -28,10 +28,11 @@ setup_mac
 $ ln -s $EVIL_HOME/dotfiles/screenrc .screenrc
 $ ln -s $EVIL_HOME/dotfiles/vimrc .vimrc
 
-5) Add the relevant cronjobs to your crontab.
+5) Add the relevant cronjobs to your crontab. (Make sure your SSH keys are
+exported to allow for non-interactive repo updates.)
 
 $ crontab -e
 (Edit crontab)
 
 $ crontab -l
-0,15,30,45 * * * * ~/s/cron/update_local_repositories.sh >/dev/null 2>&1
+0,15,30,45 * * * * ~/c/cron/update_local_repositories.sh >/dev/null 2>&1
