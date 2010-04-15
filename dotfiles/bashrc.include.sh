@@ -56,6 +56,10 @@ function setup_env
   export PATH=$EVIL_HOME/bin:$PATH
 }
 
+# -----------------------------------------
+# Add your local shared customizations here
+# -----------------------------------------
+
 function setup_common
 {
   # If not running interactively, don't do anything
@@ -67,12 +71,3 @@ function setup_common
   set_title
 }
 
-# -----------------------------------------
-# Add your local shared customizations here
-# -----------------------------------------
-
-function setup_linux
-{
-  alias ls='ls --color'
-  setup_common
-}
