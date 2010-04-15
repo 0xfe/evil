@@ -15,12 +15,23 @@ function parse_git_stash {
   fi
 }
 
-# Returns "|unmerged:N" where N is the number of unmerged branches (if any).
+# Returns "|unmerged:N" where N is the number of unmerged local and remote
+# branches (if any).
 function parse_git_unmerged {
-  local unmerged=`expr $((git branch --no-color -a --contains HEAD; git branch --no-color -a) | sort | uniq -u | wc -l)`
+  local unmerged=`expr $(git branch --no-color -a --no-merged | wc -l)`
   if [ "$unmerged" != "0" ]
   then
     echo "|unmerged:$unmerged"
+  fi
+}
+
+# Returns "|unpushed:N" where N is the number of unpushed local and remote
+# branches (if any).
+function parse_git_unpushed {
+  local unpushed=`expr $( (git branch --no-color -a --contains HEAD; git branch --no-color -a) | sort | uniq -u | wc -l )`
+  if [ "$unpushed" != "0" ]
+  then
+    echo "|unpushed:$unpushed"
   fi
 }
 
@@ -29,7 +40,7 @@ git_prompt() {
   local ref=$(git symbolic-ref HEAD 2>/dev/null | cut -d'/' -f3)
   if [ "$ref" != "" ]
   then
-    echo "($ref$(parse_git_dirty)$(parse_git_stash)$(parse_git_unmerged)) "
+    echo "($ref$(parse_git_dirty)$(parse_git_stash)$(parse_git_unmerged)$(parse_git_unpushed)) "
   fi
 }
 
