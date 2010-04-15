@@ -27,7 +27,7 @@ Alternatively, you can keep custom .bashrc files for each of your machines in
 dotfiles/ and source them in from (or symlink to) your .bashrc.
 
 source ~/c/env.sh
-source $EVIL_HOME/dotfiles/bashrc.my_mac_host
+source $EVIL_HOME/dotfiles/bashrc.`hostname`
 
 4) Symlink to the other configuration files.
 

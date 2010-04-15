@@ -1,0 +1,7 @@
+# Bash init script for host sylar.muthanna.com.
+# Mohit Cheppudira <mohit@muthanna.com>
+
+source $EVIL_HOME/dotfiles/bashrc.include.sh
+
+alias ls='ls --color'
+setup_common
