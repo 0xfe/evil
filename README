@@ -21,7 +21,13 @@ customizations to that file (e.g., in setup_mac).
 
 source ~/c/env.sh
 source $EVIL_HOME/dotfiles/bashrc.include.sh
-setup_mac
+setup_common
+
+Alternatively, you can keep custom .bashrc files for each of your machines in
+dotfiles/ and source them in from (or symlink to) your .bashrc.
+
+source ~/c/env.sh
+source $EVIL_HOME/dotfiles/bashrc.my_mac_host
 
 4) Symlink to the other configuration files.
 

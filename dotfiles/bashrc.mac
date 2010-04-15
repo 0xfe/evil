@@ -1,0 +1,8 @@
+# Bash init script for my mac.
+# Mohit Cheppudira <mohit@muthanna.com>
+
+source $EVIL_HOME/dotfiles/bashrc.include.sh
+
+alias ls='ls -G'
+export PATH=$HOME/Local/bin:/opt/local/bin:/usr/local/bin:/opt/local/sbin:$PATH
+setup_common

@@ -5,8 +5,7 @@
 # by sourcing in env.sh before including this script
 #
 #   source ~c/env.sh
-#   source $EVIL_HOME/bashrc.include.sh
-#   setup_linux
+#   source $EVIL_HOME/dotfiles/bashrc.include.sh
 
 # Include prompt support functions.
 source $EVIL_HOME/dotfiles/scripts/prompt.sh
@@ -71,13 +70,6 @@ function setup_common
 # -----------------------------------------
 # Add your local shared customizations here
 # -----------------------------------------
-
-function setup_mac
-{
-  alias ls='ls -G'
-  export PATH=$HOME/Local/bin:/opt/local/bin:/usr/local/bin:/opt/local/sbin:$PATH
-  setup_common
-}
 
 function setup_linux
 {
