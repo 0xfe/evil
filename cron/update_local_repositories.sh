@@ -9,7 +9,7 @@
 #
 # 0,15,30,45 * * * * ~/s/cron/update_local_repositories.sh >/dev/null 2>&1
 
-for dir in w p s x
+for dir in `cat ~/s/GIT.conf`
 do
   spath=~/$dir
   if [ -d $spath ]
