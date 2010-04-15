@@ -16,7 +16,6 @@ source $EVIL_HOME/env.sh
 
 for dir in $EVIL_REPO_DIRS
 do
-  echo "Checking for $dir..."
   if [ -d $dir ]
   then
     echo "Updating $dir..."
