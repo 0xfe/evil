@@ -28,7 +28,8 @@ function parse_git_unmerged {
 # Returns "|unpushed:N" where N is the number of unpushed local and remote
 # branches (if any).
 function parse_git_unpushed {
-  local unpushed=`expr $( (git branch --no-color -r --contains HEAD; git branch --no-color -r) | sort | uniq -u | wc -l )`
+  local unpushed=`expr $( (git branch --no-color -r --contains HEAD; \
+    git branch --no-color -r) | sort | uniq -u | wc -l )`
   if [ "$unpushed" != "0" ]
   then
     echo "|unpushed:$unpushed"
@@ -83,7 +84,9 @@ function color_prompt
     local u_color=$yellow
   fi
 
-  PS1="$light_blue> $current_tty $u_color\u$brown@${purple}\h$brown:$light_blue\w\n$light_blue> $light_red\$? $cyan\$(git_prompt)$brown"'\$'"$none "
+  PS1="$light_blue> $current_tty $u_color\u$brown@${purple}\h$brown:\
+$light_blue\w\n$light_blue> $light_red\$? $cyan\$(git_prompt)\
+$brown"'\$'"$none "
 
   PS2="$dark_gray>$none "
 }
@@ -145,7 +148,8 @@ function setup_common
 function setup_mac
 {
   alias ls='ls -G'
-  export PATH=$HOME/Local/bin:/opt/local/bin:/usr/local/bin:/opt/local/sbin:$PATH
+  export PATH=$HOME/Local/bin:/opt/local/bin:\
+/usr/local/bin:/opt/local/sbin:$PATH
   setup_common
 }
 
