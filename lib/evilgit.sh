@@ -3,7 +3,17 @@
 
 # Returns "*" if the current git branch is dirty.
 function evil_git_dirty {
-  [[ $(git diff --shortstat 2> /dev/null | tail -n1) != "" ]] && echo "*"
+  [[ $(git diff --shortstat 2>/dev/null | tail -n1) != "" ]] && echo "*"
+}
+
+# Returns the number of untracked files.
+function evil_git_num_untracked_files {
+  expr `git status --porcelain 2>/dev/null| grep "^??" | wc -l`
+}
+
+# Returns the number of untracked files.
+function evil_git_num_dirty_files {
+  expr `git status --porcelain 2>/dev/null | egrep "^(M| M)" | wc -l`
 }
 
 # Returns "|shashed:N" where N is the number of stashed states (if any).
