@@ -48,7 +48,9 @@ function evil_git_unpushed {
 
 # Get the current git branch name (if available)
 evil_git_prompt() {
-  local ref=$(git symbolic-ref HEAD 2>/dev/null | cut -d'/' -f3)
+  # local ref=$(git symbolic-ref HEAD 2>/dev/null | cut -d'/' -f3)
+  local ref=$(git branch 2>/dev/null | grep '^\*' | cut -b 3- | sed 's/[\(\)]//g')
+
   if [ "$ref" != "" ]
   then
     echo "($ref$(evil_git_dirty)$(evil_git_stash)$(evil_git_unmerged)$(evil_git_unpushed)) "
