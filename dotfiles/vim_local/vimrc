@@ -83,8 +83,8 @@ au BufWinEnter * let w:m2=matchadd('ErrorMsg', '\%>80v.\+', -1)
 " Use: zc, zo, zC, zO, zR, zM
 " Ctrl-K .3 for ⋯
 set foldmethod=indent
-highlight Folded ctermfg=red
-highlight FoldColumn ctermfg=white
+highlight Folded ctermfg=red guifg=red guibg=black
+highlight FoldColumn ctermfg=white guifg=white guibg=black
 set fillchars=fold:⋯
 
 " My information
