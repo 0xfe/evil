@@ -1,0 +1,18 @@
+xmonad / XMonad
+
+located in ~/.cabal/bin/xmonad
+configs in ~/.xmonad/xmonad.hs
+
+Rebuilding configs:
+$ xmonad --recompile
+<Mod> q
+
+Navigating
+
+- <Mod> Space : mess with layout
+- <Mod> j/k: move around
+- <Mod> <Shift> <Enter> : New terminal
+- <Mod> <Shift> j/k: Move windows around
+- <Mod> Click: Drag windows (and make floating)
+- <Mod> t: unfloat
+
