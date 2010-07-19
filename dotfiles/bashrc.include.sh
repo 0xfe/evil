@@ -31,6 +31,9 @@ function setup_aliases
 
 function setup_gpg_agent
 {
+  local gpg_agent=$(which gpg-agent)
+  local start_gpg=false
+
   if [ -f ${HOME}/.gpg-agent-info ]
   then
     source ${HOME}/.gpg-agent-info
@@ -40,6 +43,24 @@ function setup_gpg_agent
 
     GPG_TTY=$(tty)
     export GPG_TTY
+  fi
+
+  if [ ! -e $(echo $GPG_AGENT_INFO | cut -f1 -d:) ]
+  then
+    start_gpg=true
+  else
+    start_gpg=false
+  fi
+
+  if [ "$GPG_AGENT_INFO" == "" ]
+  then
+    start_gpg=true
+  fi
+
+  if [ "$gpg_agent" != "" -a "$start_gpg" == "true" ]
+  then
+    eval $(${gpg_agent} --daemon --enable-ssh-support \
+      --write-env-file $HOME/.gpg-agent-info)
   fi
 }
 
