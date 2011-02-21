@@ -12,17 +12,42 @@
 # Recent changes (see bottom of file for complete version history):
 #------------------------------------------------------------------------------
 #
-#  v2.48 MAINTENANCE: Replace switch-statements with if..elsif..else
-#        statements, to make it easier to compile the Win32 binary
+#  v2.52 FEATURE: List episodes missing from the user's collection with
+#        --show-missing. (Thanks Baldur Karlsson!)
+#        MAINTENANCE: --include_series and --exclude_series became 
+#        --include-series and --exclude-series (underscore became hyphen). Old 
+#        option names are still accepted (for compatibility with .tvrenamerrc 
+#        files)
 #
-#  v2.49 BUGFIX: Comparison of $scheme was using '==' instead of 'eq'
-#        BUGFIX: Specifying input file / URL on command line wasn't working
-#        MAINTENANCE: Removed some redundant pattern matches in command-line parser
+#  v2.53 MAINTENANCE:
+#            EpGuides support updated to cope with annoying links to trailers / 
+#            recaps etc which now appear as <spans> within the episode titles.  
+#            Thanks to Frederic and Jasper for bringing this to my attention.
+#        MAINTENANCE:
+#            Added m4v to the filename filter (thanks Frederic!)
 #
-#  v2.50 MAINTENANCE: AniDB.info changed back to AniDB.net
-#        BUGFIX: AniDB.net data was always treated as compressed, even when not
-#        the case (recent version of Perl decompress fetched data
-#        automatically). Now uses proper detection.
+#  v2.54 MAINTENANCE:
+#            Fix EpGuides.com scraper - it sometimes missed the first character 
+#            of episode titles (bad regexp)
+#        MAINTENANCE:
+#            Better compatability with EpGuides.com - they remove "The" and "A" 
+#            from series titles when creating their URLs. This script did not 
+#            know about "A" until now.
+#        FEATURE:
+#            Double episodes' titles are merged so that their common prefix 
+#            does not appear. For instance, the following two episodes:
+#
+#              Camdenites: Part 1
+#              Camdenites: Part 2
+#
+#            Used to become:
+#
+#              Camdenites: Part 1 - Camdenites: Part 2
+#
+#            Now it becomes:
+#
+#              Camdenites: Part 1 and 2
+#
 #
 # TODO: {{{1
 #  (Note most of this list is being ignored due to work on the v3 rewrite of this script in Python)
@@ -91,7 +116,7 @@ my $format       = Format_AutoFetch;
 my $site         = Site_EpGuides;	# Preferred site search for title data. NB: These are tried in the order they are listed above
 my $search_anime = undef; 			# Search TV sites
 
-my $filterFiles  = '\.(avi|mkv|ogm|mpg|mpeg|rm|wmv|mp4|mpeg4|mov|srt|sub|ssa|smi|sami|txt)$';
+my $filterFiles  = '\.(avi|mkv|ogm|mpg|mpeg|rm|wmv|m4v|mp4|mpeg4|mov|srt|sub|ssa|smi|sami|txt)$';
 my ($series)     = (getcwd() =~ /\/([^\/]+)$/);     # Grab current dir name, discard rest of path
 my $exclude_series     = 1;	# 0=Always include series name, 1=Exclude if cwd is "Series X", 2=Always exclude
 my $autoseries   = 0;	# Do not automatically use scraped series name
@@ -120,16 +145,17 @@ my $reversible   = undef; # Disabled
 my $debug        = undef; # Disabled
 my $ANSIcolour   = 1;     # Use colour
 my $cleanup      = undef; # Disabled
+my $show_missing = 0;     # 0: Don't show, 1: List missing episodes
 
 if($ANSIcolour && $ENV{'TERM'} eq '' && $INC{'Win32/Console/ANSI.pm'} eq ''){print "You appear to be using MS-DOS without the Win32::Console::ANSI module, colour disabled!\n (See script header for a workaround)\n\n"; $ANSIcolour = 0;}
 
 # Internal Flags
-my $implicit_season;
+my $implicit_season = 0;    # 0=Autodetect season, 1=Script has guessed, 2=User has provided season
 my $implicit_format = 1;  # 1="Soft" format, use internal algorithm to detect input source, 2="Hard" format - no guessing allowed
 my $do_win32_associate = 0;	# 0=Do nothing, 1=associate, -1=unassociate
 
 #------------------------------------------------------------------------------}}}
-my $version = "TV Series Renamer 2.50\nReleased 07 January 2010\n"; # {{{
+my $version = "TV Series Renamer v2.54\nReleased 18 July 2010\n"; # {{{
 print $version;
 my $helpMessage = 
 "Usage: $0 [OPTIONS] [FILE|URL|-]
@@ -192,8 +218,8 @@ Formatting options:
 Specifying data to use:
  --season=X         Override season detection
  --series=X         Uses X as a prefix (enclose in quotes for best results)
- --exclude_series   Don't include the series name in the new filename, ever
- --include_series   Overrides the above setting, incase you set it default
+ --exclude-series   Don't include the series name in the new filename, ever
+ --include-series   Overrides the above setting, incase you set it default
  --chdir=X          Specify a directory to rename. If specified multiple times
                     all but last are ignored.
 
@@ -218,6 +244,7 @@ Specifying data to use:
 
 Choosing how to interact:
  --detailed         Show 'before -> after' (not just 'after') in proposal
+ --show-missing     List episodes not present in your collection
  --interactive      Manually select each change to be applied
  --unattended       Assume NO for all user prompts except \"Make changes?\"
  --nofilter         Don't filter file extensions by
@@ -295,8 +322,8 @@ if($#ARGV ne -1)
 										print "Switching to directory $1\n"; chdir($1);
 										($series) = (getcwd() =~ /\/([^\/]+)$/);
 									}
-		elsif( $arg =~ /^--include_series$/i ) {$exclude_series = 0;}
-		elsif( $arg =~ /^--exclude_series$/i ) {$exclude_series = 2;}
+		elsif( $arg =~ /^--include[-_]series$/i ) {$exclude_series = 0;}
+		elsif( $arg =~ /^--exclude[-_]series$/i ) {$exclude_series = 2;}
 		elsif( $arg =~ /^--season=(.*)$/i )    {$season = $1; $implicit_season = 2;}
 		elsif( $arg =~ /^--autoseries$/i )   {$autoseries = 1;}
 		elsif( $arg =~ /^--noautoseries$/i ) {$autoseries = 0;}
@@ -309,6 +336,7 @@ if($#ARGV ne -1)
 		elsif( $arg =~ /^--gap=(.*)$/i )       {$gap = $1;}
 		elsif( $arg =~ /^--separator=(.*)$/i ) {$separator = $1;}
 		elsif( $arg =~ /^--detailed$/i )     {$detailedView = 1;}
+		elsif( $arg =~ /^--show-missing$/i ) {$show_missing = 1;}
 		elsif( $arg =~ /^--interactive$/i )  {$interactive = 1;}
 		elsif( $arg =~ /^--unattended$/i )   {$unattended = 1;}
 		elsif( $arg =~ /^--cache$/i )        {$nocache = 0;}
@@ -344,16 +372,45 @@ if($#ARGV ne -1)
 		}
 }
 
-if( ! $implicit_season ){
-	# Check if current directory name ($series) is a likely sub-folder of the series. EG: "Prison Break/Season 1/"
-	if(($season) = ($series =~ /^(?:Season|series)?.?(\d+)\s*$/i)){
-		($series) = (getcwd() =~ /\/([^\/]+)\/[^\/]+$/);	# Grab parent dir name, discard rest of path
-		if($exclude_series == 1){$exclude_series=2;}		# See default settings
-	}
-	else{
-		($series) = ($series =~ /(.*?)( \(Complete\))?$/i);         # (NB Minimal "*?") Discard " (Complete)" in series name
-		($series, $season) = ($series =~ /(.+?)(?:\s+(\d+)x)?$/i);  # Extract season number (NB Minimal "+?" and non-capturing parenthesis)
-	}
+if( $implicit_season != 2 ){
+    # Try to deduce the season from the current folder name.
+    #
+    # Examples:
+    #
+    #   "2" -> season 2, get series name from parent directory
+    #   "Season 2" -> season 2, get series name from parent directory
+    #   "Series 2" -> season 2, get series name from parent directory
+    #
+    #   "Survivor (20)" -> season 20 of "Survivor"
+    #   "Survivor 20x" -> season 20 of "Survivor"
+    #
+    if( $series =~ m{^(?P<prefix>.*)(?:season|series)\s*(?P<season>\d+)\s*$}i 
+            or $series =~ m{^\s*(?P<season>\d+)\s*$}i ){
+
+        $season = $+{season};
+
+        if( $+{prefix} =~ m/^\s*$/ ){
+            # No prefix, get series names from parent directory
+            ($series) = (getcwd() =~ m{/([^/]+)/[^/]+/?$});
+        }else{
+            $series = $+{prefix};
+        }
+
+        if( $exclude_series == 1 ){
+            # 1=Exclude if cwd is "Season X", 2=Exclude always
+            $exclude_series=2;
+        }
+    }
+    elsif( $series =~ m{^(?P<series>.*)\((?P<season>\d+)\)\s*$}i ){
+        $series = $+{series};
+        $season = $+{season};
+    }
+    elsif( $series =~ m{^(?P<series>.+?)(?P<season>\d+)x\s*$}i ){
+        $series = $+{series};
+        $season = $+{season};
+    }else{
+        print "Autodetecting season number failed\n";
+    }
 }
 
 # Sanitize series name, incase it happens to be a valid regular expression (for
@@ -595,7 +652,7 @@ else
 		{
 			print $ANSIcyan."Current directory detected as anime.\n".$ANSInormal;
 
-			# Choose group behaviour is user has not
+			# Choose group behaviour if user has not
 			if( ! defined $nogroup ){ $nogroup = 0; }
 
 			print "Searching AniDB.net for \"$search_term\"... ";
@@ -618,7 +675,7 @@ else
 			}
 
 			# Strip attributes from non-<a> tags
-			s/<(?!a)([^ >]*)[^>]*\/?>/<\1>/g;
+            s/(?<=<)(?!label|a)([^ >]*)[^>]*/\1/g;
 	
 			# Save snapshot for debugging
 			if($debug){
@@ -662,9 +719,9 @@ else
 					print "Unique hit!\n";	
 					$raw_input = $rcache;	# Configure script to use $raw_input
 
-					# Strip attributes from tags, making format detection
+					# Strip attributes from non-a and non-labal tags, making format detection
 					# slightly more resistant to change
-					$raw_input =~ s/<([^ >]*)[^>]*\/?>/<\1>/g;
+			        $raw_input =~ s/(?<=<)(?!label|a)([^ >]*)[^>]*/\1/g;
 				}
 				else{
 					print "No results.\n";
@@ -701,7 +758,9 @@ else
 			if($site eq Site_EpGuides)
 			{
 				$format = Format_EpGuides;
-				my  ($shortSeries) = ($search_term =~ /^(?:The\s+)?(.*?)\s*(?:, The)?$/i);
+				# Strip articles, such as "A" and "The" from series titles, as 
+				# this is what EpGuides does.
+				my  ($shortSeries) = ($search_term =~ /^(?:(?:A|The)\s+)?(.*?)\s*(?:, (?:A|The))?$/i);
 				$shortSeries =~ tr/'//d;
 				$shortSeries =~ s/\s+//g;
 				$inputFile = "http://epguides.com/$shortSeries/";
@@ -867,12 +926,6 @@ else
 						if($debug){print $ANSIcyan."Compressed data detected\n".$ANSInormal;}
 						$_ = Compress::Zlib::memGunzip($_);	
 					}
-
-					# XXX
-					# Removed in v2.41, was causing problems with epguides.com, but didn't seem to preclude correct use
-					# of AniDB...
-					# Probably obsolete since "binmode(STDOUT, ':utf8')" was added to the top of the script...
-					#$_ = Encode::decode 'UTF-8', $_;
 				}
 				else{
 					print $ANSIred."Can't fetch \"$inputFile\", please check this URL in a browser\n$ANSIyellow Consider specifying an URL on the command-line. Error was: $!".$ANSInormal."\n";
@@ -967,21 +1020,20 @@ else
 			} # End case Format_AniDB }}}
 			elsif( $arg == Format_URL_AniDB ) { #{{{
 				# Remember that most attributes are stripped from the HTML before being passed to us. Sample data:
-				# <tr class="g_odd" id="eid_42520">
-				#     <td class="id eid"><a href="animedb.pl?show=ep&amp;eid=42520">1</a></td>
-				#     <td class="title">
-				#         <span class="icons">
-				# 
-				#         </span>
-				#         <label>The Green Seat <span class="aka">( 緑の座 / Midori no za )</span></label>
-				#     </td>
-				#     <td class="duration">24m</td>
-				#     <td class="date airdate">23.10.2005</td>
-				# </tr>
-
-				#		<label>Speedy Lady <span>( つっぱしる女 / Tsuppashiru Onna )</span></label>
-				#						  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-				#						           Optional, may not be present
+                #
+		        # <tr class="g_odd newtype" id="eid_42520">
+		        # 	<td class="id eid">
+		        # 		<a href="animedb.pl?show=ep&amp;eid=42520">1</a>
+		        # 	</td>
+		        # 	<td class="title">
+		        # 		<label title="緑の座 / Midori no za">The Green Seat
+		        # 		</label>
+		        # 	</td>
+		        # 	<td class="duration">24m
+		        # 	</td>
+		        # 	<td class="date airdate">23.10.2005
+		        # 	</td>
+		        # </tr>
 
 				my $offset = 0;
 				my ($num, $snum, $epTitle, $japEpTitle);
@@ -992,20 +1044,32 @@ else
 					}
 				}
 
-				while($offset < length($_)){
-					if ( ($num, $epTitle) = (substr($_, $offset) =~ /<tr[^>]*>\s*<td[^>]*><a[^>]*>(S?\d+)<\/a><\/td>.*?<label>([^<]*).*?<\/label>.*?<\/tr>/ms) ){
-
-					# Remove optional <span> if present
-					($epTitle) = $epTitle =~ /(^[^<]*)/;
-
-						if(($snum) = ($num =~ /S(\d+)/i)){              # Detect Special
-							check_and_push($epTitle, \@sname, $snum);
-						}else{
-							check_and_push($epTitle, \@name, $num);
-						}
-
-					}
-					$offset += $+[0];   ## Append (local to substr) ending pos of last entire (mis)match
+                while( $_ =~ m{
+                    # <tr>
+                    #     <th>EP</th>
+                    #     <th>Title</th>
+                    #     <th>Duration</th>
+                    #     <th>Air Date</th>
+                    # </tr>
+                    <tr>\s*
+                        <td>\s*
+                            <a\shref="animedb.pl\?show=ep&amp;eid=\d+">\s*(?P<num>[sS]?\d+)\s*</a>\s*
+                        </td>\s*
+                        <td>\s*
+                            <label\s*title="(?P<altTitle>[^"]*)">(?P<epTitle>[^<]*)
+                            </label>\s*
+                        </td>\s*
+                        <td>[^<]*
+                        </td>\s*
+                        <td>[^<]*
+                        </td>\s*
+                    </tr>
+                }xg ){
+                    if(($snum) = ($+{num} =~ /S(\d+)/i)){              # Detect Special
+                        check_and_push($+{epTitle}, \@sname, $snum);
+                    }else{
+                        check_and_push($+{epTitle}, \@name, $+{num});
+                    }
 				}
 			} # End case Format_URL_AniDB }}}
 			elsif( $arg == Format_TVtorrents ) { #{{{
@@ -1152,8 +1216,16 @@ else
 				
 				foreach(@input)
 				{
-					# Episodes with airdates
-					if( ($num, $epTitle) = ($_ =~ /\s+$season-(..).*\d+ [A-Z][a-z]+ \d+ \s*(.*)$/) )
+					# First remove any <span> tags and anything they contain 
+					# (links to Trailers etc)
+					s!<span[^>]*>.*?</span>!!g;
+
+                    if( ($num, $epTitle) = ($_ =~ /^\d+\s+$season-(\d+)\s+.*<a[^>]*>(.*?)<\/a>/) )
+                    {
+                        check_and_push($epTitle, \@name, $num);
+                    }
+                    # Episodes with airdates
+					elsif( ($num, $epTitle) = ($_ =~ /\s+$season-(..).*\d+ [A-Z][a-z]+ \d+ \s*(.*)$/) )
 					{
 						# Cleanup whitespace (and tags if using online version)
 						($epTitle) = ($epTitle =~ /^(?:<a[^>]*>)?(.*?)(?:<\/a>)?$/);
@@ -1340,6 +1412,12 @@ my ($before, $after, $fileExt, $filePrefix, $fileSeason, $fileNum, $sfileNum, $f
 
 print $ANSIred;             # Set text colour to red
 
+# Assume we are missing all episodes until proven otherwise
+# %missing{$epNum} -> $title
+my %missing = ();
+my $i = 0;
+foreach (@name) { $missing{$i++} = $_; }
+
 foreach(@fileList){
 	$titles = \@name;       # Reference normal episode to begin with
 	$fileSeason = undef;	# Reset grabbed season, not all file names have this
@@ -1460,7 +1538,8 @@ foreach(@fileList){
 			my $S = ($titles == \@sname) ? 'S' : '' ;                           # "Special episode" prefix
 			my $P = ($titles == \@pname) ? 'P' : '' ;                           # "Pilot episode" prefix
 			my $dispNum = $S.$P.$dispNum . ($fileNum2 ? "-".$S.$fileNum2 : ''); # Compound file number (special prefix & double episode)
-			my $epTitle2 = $fileNum2 ? " - ".$$titles[$fileNum2] : '' ;         # Double episode's second title
+			my $epTitle1 = $$titles[$fileNum];									# Episode title, or first of two titles in a double episode
+			my $epTitle2 = $fileNum2 ? $$titles[$fileNum2] : '' ;				# Double episode's second title
 			my $epNum;
 			my $local_gap = $gap;
 			for my $arg ($scheme){
@@ -1473,6 +1552,33 @@ foreach(@fileList){
 				else          {print "\nUnknown scheme '$scheme'! Try \"$0 --help\" for list of valid schemes.\n"; exit 1;}
 			}
 			if($filePrefix eq ''){$local_gap = undef;}
+
+			# Merge double-episode titles
+			my $epTitle = $epTitle1;
+			if($epTitle2){
+				my $max = 0;
+
+				# Convert string to arrays of characters
+				my @first = split //, $epTitle1;
+				my @second = split //, $epTitle2;
+
+				if( length $epTitle2 > length $epTitle1 ){
+					$max = length $epTitle2;
+				}else{
+					$max = length $epTitle1;
+				}
+
+				my $common = 0;
+				for my $i (0..$max){
+					if( @first[$i] eq @second[$i] ){
+						$common = $i;
+					}else{
+						last;
+					}
+				}
+
+				$epTitle = $epTitle1 . " and " . substr($epTitle2, $common+1);
+			}
 			
 			# Print all source data before compiling new name
 			if($debug && ($before ne $_)){
@@ -1488,7 +1594,7 @@ foreach(@fileList){
 			}
 			
 			# Compile new name
-			$_ = "$filePrefix$local_gap$epNum$separator$$titles[$fileNum]$epTitle2$group.$fileExt";
+			$_ = "$filePrefix$local_gap$epNum$separator$epTitle$group.$fileExt";
 
 		}else{
 			print "$ANSIred\nNo input corresponds to $ANSIbold\"$before\"$ANSInormal $ANSIred(treated as ep ", $titles==\@sname ? "S" : "", "$fileNum), ignoring.$ANSInormal";
@@ -1501,6 +1607,10 @@ foreach(@fileList){
 	s/(.*)(\..+)$/$1\L$2/;      # Force extension to lowercase
 
 	if($postproc){eval $postproc;}
+
+    # Remove current episode(s) from list of missing episodes
+    delete $missing{$fileNum};
+    delete $missing{$fileNum2};
 
 	$after = $_;
 	#End CONSTRUCT NEW FILENLAME }}}
@@ -1568,9 +1678,23 @@ for( my $i = 0; $i < @a; $i++ )
 
 print $ANSInormal;      # Reset text colour
 
-if ($warnings eq 0){ print "[Done]"; } else{ print "\n$warnings warning(s)"; }
+if ($warnings eq 0){ print "[Done]\n"; } else{ print "\n$warnings warning(s)"; }
 if ($dubious_count ne 0 ){ print "\n$dubious_count dubious name extraction(s)"; }
 # End CHECK NAME TRANSITIONS }}}
+
+if($show_missing){
+    # Gotta catch 'em all!
+    print $ANSIcyan;
+    print "\n";
+    foreach my $epNum ( sort {$a <=> $b} keys %missing ) {
+        my $title = $missing{$epNum};
+        if ($title){
+            print "Info: Your collection is missing episode $epNum: $title\n";
+        }
+    }
+    print $ANSInormal;
+}
+
 
 # Sort proposed changes by destination name for an improved user-experience
 my %changes = @a;
@@ -2170,4 +2294,26 @@ sub readURLfile #{{{
 #  v2.47 BUGFIX: --season wasn't overriding the auto-detection. Thanks Jørn
 #        Odberg for pointing this out!
 #
-# vim: set ft=perl ff=unix ts=4 sw=4 sts=4 fdm=marker fdc=4:
+#  v2.48 MAINTENANCE: Replace switch-statements with if..elsif..else
+#        statements, to make it easier to compile the Win32 binary
+#
+#  v2.49 BUGFIX: Comparison of $scheme was using '==' instead of 'eq'
+#        BUGFIX: Specifying input file / URL on command line wasn't working
+#        MAINTENANCE: Removed some redundant pattern matches in command-line parser
+#
+#  v2.50 MAINTENANCE: AniDB.info changed back to AniDB.net
+#        BUGFIX: AniDB.net data was always treated as compressed, even when not
+#        the case (recent version of Perl decompress fetched data
+#        automatically). Now uses proper detection.
+#
+#  v2.51 MAINTENANCE: AniDB scraper updated in sympathy with site changes
+#        ENHANCEMENT: Season number detection now supports following directory 
+#        name / layouts:
+#
+#          SeriesName/2
+#          SeriesName/Series 2
+#          SeriesName/Season 2
+#          SeriesName 2x
+#          SeriesName (2)
+#
+# vim: set ft=perl ff=unix ts=4 sw=4 sts=4 fdm=marker fdc=4 noet:
