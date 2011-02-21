@@ -3,5 +3,12 @@
 
 source $EVIL_HOME/dotfiles/bashrc.include.sh
 
+export EC2_HOME=/opt/ec2-api-tools
+export JAVA_HOME=/usr/lib/jvm/java-6-openjdk
+export EC2_CERT=$HOME/w/amazon/cert-TJLCYRZVXGH47R6HNRSA3JJ62DKT2AOM.pem
+export EC2_PRIVATE_KEY=$HOME/w/amazon/pk-TJLCYRZVXGH47R6HNRSA3JJ62DKT2AOM.pem
+
+export PATH=$EC2_HOME/bin:$PATH
+
 alias ls='ls --color'
 setup_common
