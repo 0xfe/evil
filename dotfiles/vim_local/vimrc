@@ -98,3 +98,7 @@ func! StripTrailingWS()
   %s/\s\+$//
 endfunc
 command! StripTrailingWS call StripTrailingWS()
+
+" Waf wscript files are python
+autocmd BufRead,BufNewFile wscript set filetype=python
+autocmd BufRead,BufNewFile *.go set filetype=go
