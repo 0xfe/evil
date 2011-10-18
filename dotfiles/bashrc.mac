@@ -16,4 +16,8 @@ alias mvim='mvim --remote-tab-silent'
 alias mvimdiff='mvim -d'
 
 export PATH=$EC2_HOME/bin:$HOME/Local/bin:/opt/local/bin:/usr/local/bin:/opt/local/sbin:$PATH
+
+# Use opendiff for git diffs (Need XCode installed)
+git config --global diff.external $EVIL_HOME/bin/gitdiff.sh
+
 setup_common
