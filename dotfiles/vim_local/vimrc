@@ -3,6 +3,24 @@
 " Enable syntax highlighting.
 syntax on
 
+" For GVim
+if has("gui_running")
+  " Disable toolbar on GVim
+  set go-=T
+
+  " GVim font and color scheme
+  set guifont=Inconsolata
+  colorscheme torte
+
+  " Switching tabs in GVim
+  " In command mode: :tabnext, tabprevious
+  " In normal mode: gt, gT, {i}gt, Ctrl-PgUp, Ctrl-PgDn
+  "
+  " Or use the remappings below
+  nnoremap <C-Left> :tabprevious<CR>
+  nnoremap <C-Right> :tabnext<CR>
+endif
+
 " Do awesome stuff on MacVim
 if has("gui_macvim")
   " Disable toolbar on MacVim
@@ -82,10 +100,10 @@ au BufWinEnter * let w:m2=matchadd('ErrorMsg', '\%>80v.\+', -1)
 " Enable folding by indentation
 " Use: zc, zo, zC, zO, zR, zM
 " Ctrl-K .3 for ⋯
-set foldmethod=indent
+" set foldmethod=indent
 highlight Folded ctermfg=red guifg=red guibg=black
 highlight FoldColumn ctermfg=white guifg=white guibg=black
-set fillchars=fold:⋯
+set fillchars=fold:·
 
 " My information
 iab xdate <c-r>=strftime("%Y/%m/%d %H:%M:%S")<cr>
