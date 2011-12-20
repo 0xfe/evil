@@ -29,6 +29,41 @@ function setup_aliases
   alias stitle='screen -X title'
 }
 
+function setup_gpg_agent
+{
+  local gpg_agent=$(which gpg-agent)
+  local start_gpg=false
+
+  if [ -f ${HOME}/.gpg-agent-info ]
+  then
+    source ${HOME}/.gpg-agent-info
+    export GPG_AGENT_INFO
+    export SSH_AUTH_SOCK
+    export SSH_AGENT_PID
+
+    GPG_TTY=$(tty)
+    export GPG_TTY
+  fi
+
+  if [ ! -e $(echo $GPG_AGENT_INFO | cut -f1 -d:) ]
+  then
+    start_gpg=true
+  else
+    start_gpg=false
+  fi
+
+  if [ "$GPG_AGENT_INFO" == "" ]
+  then
+    start_gpg=true
+  fi
+
+  if [ "$gpg_agent" != "" -a "$start_gpg" == "true" ]
+  then
+    eval $(${gpg_agent} --daemon --enable-ssh-support \
+      --write-env-file $HOME/.gpg-agent-info)
+  fi
+}
+
 function setup_env
 {
   # CDPATH makes life easier
@@ -66,6 +101,7 @@ function setup_common
   [ -z "$PS1" ] && return
 
   setup_aliases
+  setup_gpg_agent
   setup_env
   color_prompt
   set_title

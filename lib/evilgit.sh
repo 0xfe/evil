@@ -25,21 +25,32 @@ function evil_git_stash {
   fi
 }
 
+# List unmerged local and remote branches
+function evil_git_list_unmerged {
+  git branch --no-color -a --no-merged
+}
+
 # Returns "|unmerged:N" where N is the number of unmerged local and remote
 # branches (if any).
 function evil_git_unmerged {
-  local unmerged=`expr $(git branch --no-color -a --no-merged | grep -v HEAD | wc -l)`
+  local unmerged=`expr $(evil_git_list_unmerged | grep -v HEAD | wc -l)`
   if [ "$unmerged" != "0" ]
   then
     echo "|unmerged:$unmerged"
   fi
 }
 
+# List unpushed commits on all branches
+function evil_git_list_unpushed {
+  git log --branches --not --remotes --simplify-by-decoration \
+    --decorate --oneline
+}
+
 # Returns "|unpushed:N" where N is the number of unpushed local and remote
 # branches (if any).
 function evil_git_unpushed {
-  local unpushed=`expr $( (git branch --no-color -r --contains HEAD; \
-    git branch --no-color -r) | grep -v HEAD | sort | uniq -u | wc -l )`
+local unpushed=`expr $( evil_git_list_unpushed | wc -l )`
+
   if [ "$unpushed" != "0" ]
   then
     echo "|unpushed:$unpushed"

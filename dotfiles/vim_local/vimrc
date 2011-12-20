@@ -28,7 +28,7 @@ if has("gui_macvim")
 
   " MacVim font and color scheme
   set guifont=Inconsolata:h13
-  colorscheme torte
+  colorscheme desert
 endif
 
 " Enable spell checking. For source code, it only checks comments.
@@ -97,13 +97,13 @@ set list listchars=tab:»»,trail:·
 " I like to stick to lines under 80 columns
 au BufWinEnter * let w:m2=matchadd('ErrorMsg', '\%>80v.\+', -1)
 
-" Enable folding by indentation
+" Enable folding by indentation. (Add guifg and guibg to customize).
 " Use: zc, zo, zC, zO, zR, zM
 " Ctrl-K .3 for ⋯
-" set foldmethod=indent
-highlight Folded ctermfg=red guifg=red guibg=black
-highlight FoldColumn ctermfg=white guifg=white guibg=black
-set fillchars=fold:·
+set foldmethod=indent
+highlight Folded ctermfg=red
+highlight FoldColumn ctermfg=white
+set fillchars=fold:⋯
 
 " My information
 iab xdate <c-r>=strftime("%Y/%m/%d %H:%M:%S")<cr>
@@ -116,3 +116,10 @@ func! StripTrailingWS()
   %s/\s\+$//
 endfunc
 command! StripTrailingWS call StripTrailingWS()
+
+" Waf wscript files are python
+autocmd BufRead,BufNewFile wscript set filetype=python
+autocmd BufRead,BufNewFile *.go set filetype=go
+
+" Enable plugins
+filetype plugin on
