@@ -3,6 +3,24 @@
 " Enable syntax highlighting.
 syntax on
 
+" For GVim
+if has("gui_running")
+  " Disable toolbar on GVim
+  set go-=T
+
+  " GVim font and color scheme
+  set guifont=Inconsolata
+  colorscheme torte
+
+  " Switching tabs in GVim
+  " In command mode: :tabnext, tabprevious
+  " In normal mode: gt, gT, {i}gt, Ctrl-PgUp, Ctrl-PgDn
+  "
+  " Or use the remappings below
+  nnoremap <C-Left> :tabprevious<CR>
+  nnoremap <C-Right> :tabnext<CR>
+endif
+
 " Do awesome stuff on MacVim
 if has("gui_macvim")
   " Disable toolbar on MacVim
