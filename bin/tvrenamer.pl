@@ -12,13 +12,6 @@
 # Recent changes (see bottom of file for complete version history):
 #------------------------------------------------------------------------------
 #
-#  v2.52 FEATURE: List episodes missing from the user's collection with
-#        --show-missing. (Thanks Baldur Karlsson!)
-#        MAINTENANCE: --include_series and --exclude_series became 
-#        --include-series and --exclude-series (underscore became hyphen). Old 
-#        option names are still accepted (for compatibility with .tvrenamerrc 
-#        files)
-#
 #  v2.53 MAINTENANCE:
 #            EpGuides support updated to cope with annoying links to trailers / 
 #            recaps etc which now appear as <spans> within the episode titles.  
@@ -48,10 +41,20 @@
 #
 #              Camdenites: Part 1 and 2
 #
+#  v2.55 MAINTENANCE:
+#            Fixed typo in user-facing message.
+#            Added *.divx to supported extensions
+#            Fixed #2, #5, and #6 on 
+#            https://github.com/meermanr/TVSeriesRenamer/issues
+#
+#              #2: Script is not compatible with Perl v5.8.8
+#              #5: UTF-8 issues
+#              #6: Need to strip commas from show name when querying epguides
+#
 #
 # TODO: {{{1
 #  (Note most of this list is being ignored due to work on the v3 rewrite of this script in Python)
-#	* Hellsing 2006 doesn't parse properly: http://anidb.net/perl-bin/animedb.pl?show=anime&aid=3296
+#   * Hellsing 2006 doesn't parse properly: http://anidb.net/perl-bin/animedb.pl?show=anime&aid=3296
 #   * Update Default Settings section to explain the use of a preferences file,
 #     the preferred way of setting defaults (pardon the pun)
 #   * Test Unicode support properly, and see if a workaround for Win32 source
@@ -116,7 +119,7 @@ my $format       = Format_AutoFetch;
 my $site         = Site_EpGuides;	# Preferred site search for title data. NB: These are tried in the order they are listed above
 my $search_anime = undef; 			# Search TV sites
 
-my $filterFiles  = '\.(avi|mkv|ogm|mpg|mpeg|rm|wmv|m4v|mp4|mpeg4|mov|srt|sub|ssa|smi|sami|txt)$';
+my $filterFiles  = '\.(avi|mkv|ogm|mpg|mpeg|rm|wmv|m4v|mp4|mpeg4|mov|divx|srt|sub|ssa|smi|sami|txt)$';
 my ($series)     = (getcwd() =~ /\/([^\/]+)$/);     # Grab current dir name, discard rest of path
 my $exclude_series     = 1;	# 0=Always include series name, 1=Exclude if cwd is "Series X", 2=Always exclude
 my $autoseries   = 0;	# Do not automatically use scraped series name
@@ -155,7 +158,7 @@ my $implicit_format = 1;  # 1="Soft" format, use internal algorithm to detect in
 my $do_win32_associate = 0;	# 0=Do nothing, 1=associate, -1=unassociate
 
 #------------------------------------------------------------------------------}}}
-my $version = "TV Series Renamer v2.54\nReleased 18 July 2010\n"; # {{{
+my $version = "TV Series Renamer v2.55\nReleased 13 March 2011\n"; # {{{
 print $version;
 my $helpMessage = 
 "Usage: $0 [OPTIONS] [FILE|URL|-]
@@ -384,16 +387,16 @@ if( $implicit_season != 2 ){
     #   "Survivor (20)" -> season 20 of "Survivor"
     #   "Survivor 20x" -> season 20 of "Survivor"
     #
-    if( $series =~ m{^(?P<prefix>.*)(?:season|series)\s*(?P<season>\d+)\s*$}i 
-            or $series =~ m{^\s*(?P<season>\d+)\s*$}i ){
+    if( $series =~ m{^(.*)(?:season|series)\s*(\d+)\s*$}i 
+            or $series =~ m{^()\s*(\d+)\s*$}i ){
 
-        $season = $+{season};
+        $season = $2;
 
-        if( $+{prefix} =~ m/^\s*$/ ){
+        if( $1 =~ m/^\s*$/ ){
             # No prefix, get series names from parent directory
             ($series) = (getcwd() =~ m{/([^/]+)/[^/]+/?$});
         }else{
-            $series = $+{prefix};
+            $series = $1;
         }
 
         if( $exclude_series == 1 ){
@@ -401,13 +404,13 @@ if( $implicit_season != 2 ){
             $exclude_series=2;
         }
     }
-    elsif( $series =~ m{^(?P<series>.*)\((?P<season>\d+)\)\s*$}i ){
-        $series = $+{series};
-        $season = $+{season};
+    elsif( $series =~ m{^(.*)\((\d+)\)\s*$}i ){
+        $series = $1;
+        $season = $2;
     }
-    elsif( $series =~ m{^(?P<series>.+?)(?P<season>\d+)x\s*$}i ){
-        $series = $+{series};
-        $season = $+{season};
+    elsif( $series =~ m{^(.+?)(\d+)x\s*$}i ){
+        $series = $1;
+        $season = $2;
     }else{
         print "Autodetecting season number failed\n";
     }
@@ -630,7 +633,7 @@ else
 
 		# First check if we have a fresh .cache file we can use instead
 		if( -e ".cache" && -M ".cache" < (15/60/24)){
-			open(CACHE, "< .cache");
+			open(CACHE, "<:utf8", ".cache");
 			$_ = <CACHE>;
 			close(CACHE);
 			($inputFile) = ($_ =~ /(^.*$)/m);	# First line contains URL
@@ -763,6 +766,8 @@ else
 				my  ($shortSeries) = ($search_term =~ /^(?:(?:A|The)\s+)?(.*?)\s*(?:, (?:A|The))?$/i);
 				$shortSeries =~ tr/'//d;
 				$shortSeries =~ s/\s+//g;
+				$shortSeries =~ tr/,//d;
+				$shortSeries =~ tr/!//d;
 				$inputFile = "http://epguides.com/$shortSeries/";
 			}    
 			# }}}
@@ -873,7 +878,7 @@ else
 				print "Checking freshness of .cache... ";
 				if($debug){print "\nCache is " . (-M ".cache") . " days old. (15min = " . 15/60/24 . ")\n";}
 				if(-M ".cache" < (15/60/24)){       # Check if cache is 15min old or fresher (measured in days)
-					open(CACHE, "< .cache");
+					open(CACHE, "<:utf8", ".cache");
 					$_ = <CACHE>;
 					close(CACHE);
 					
@@ -932,8 +937,8 @@ else
 				}
 
 				unless($nocache){
-					open(CACHE, "> .cache");
-					print CACHE $inputFile."\n";
+					open(CACHE, ">:utf8", ".cache");
+					print CACHE $inputFile, "\n";
 					print CACHE $_;
 					close(CACHE);
 				}
@@ -965,7 +970,7 @@ else
 	else	#{{{
 	{
 		my $stdin;
-		binmode(STDIN, "utf8");
+		binmode(STDIN, ":utf8");
 		while(<STDIN>){$stdin .= $_}
 		$_ = $stdin;
 	}	#}}}
@@ -1053,10 +1058,10 @@ else
                     # </tr>
                     <tr>\s*
                         <td>\s*
-                            <a\shref="animedb.pl\?show=ep&amp;eid=\d+">\s*(?P<num>[sS]?\d+)\s*</a>\s*
+                            <a\shref="animedb.pl\?show=ep&amp;eid=\d+">\s*([sS]?\d+)\s*</a>\s*
                         </td>\s*
                         <td>\s*
-                            <label\s*title="(?P<altTitle>[^"]*)">(?P<epTitle>[^<]*)
+                            <label\s*title="([^"]*)">([^<]*)
                             </label>\s*
                         </td>\s*
                         <td>[^<]*
@@ -1065,10 +1070,10 @@ else
                         </td>\s*
                     </tr>
                 }xg ){
-                    if(($snum) = ($+{num} =~ /S(\d+)/i)){              # Detect Special
-                        check_and_push($+{epTitle}, \@sname, $snum);
+                    if(($snum) = ($1 =~ /S(\d+)/i)){              # Detect Special
+                        check_and_push($3, \@sname, $snum);
                     }else{
-                        check_and_push($+{epTitle}, \@name, $+{num});
+                        check_and_push($3, \@name, $1);
                     }
 				}
 			} # End case Format_URL_AniDB }}}
@@ -1609,8 +1614,8 @@ foreach(@fileList){
 	if($postproc){eval $postproc;}
 
     # Remove current episode(s) from list of missing episodes
-    delete $missing{$fileNum};
-    delete $missing{$fileNum2};
+    delete $missing{int $fileNum};
+    delete $missing{int $fileNum2};
 
 	$after = $_;
 	#End CONSTRUCT NEW FILENLAME }}}
@@ -1665,7 +1670,7 @@ for( my $i = 0; $i < @a; $i++ )
 		if($a[$i] eq $a[$j] && $b[$i] ne $b[$j])
 		{
 			# Warn user, and delete both entries
-			print "\nDuplicate target \"$a[$i]\" for files \n     \"$b[$i]\" and \n     \"$b[$j]\", not renmaing either!\n";
+			print "\nDuplicate target \"$a[$i]\" for files \n     \"$b[$i]\" and \n     \"$b[$j]\", not renaming either!\n";
 			$warnings++;
 			$b[$i] = undef;
 			$a[$i] = undef;
@@ -2156,9 +2161,9 @@ sub readURLfile #{{{
 #   - Added "--search=X" argument. Can be either "anime" or "tv", and defines which
 #     set of sites to search.
 #   - Extended AutoFetch to search AniDB.info
-#	- Added Unicode support, *even for windows*, which was a non-trivial task as google will
-#	  assert. So now HTML Entities are represented as Unicode (EG: "&#9829;" -> "♥"). Tested
-#	  with ASCII containing HTML Entities and UTF-8 containing Kanji.
+#   - Added Unicode support, *even for windows*, which was a non-trivial task as google will
+#     assert. So now HTML Entities are represented as Unicode (EG: "&#9829;" -> "♥"). Tested
+#     with ASCII containing HTML Entities and UTF-8 containing Kanji.
 #
 #  v2.21 Fixed bug AutoFetch mode which caused many searches to fail with AniDB {{{2 
 #  (spaces were not being converted to %20 when sending data to the website).
@@ -2200,44 +2205,44 @@ sub readURLfile #{{{
 #         production code.
 #
 #  v2.30 COMPATABILITY: Heirarchical paths (EG "24/Season 6") are now a bit {{{2
-#		 fuzzier, allowing "24/Season.6" and the like
+#        fuzzier, allowing "24/Season.6" and the like
 #
 #  v2.31 FLEXABILITY: --preproc evaluation moved earlier, to allow it to {{{2
-#		 manipulate the filename _before_ file extensions are detected.
-#		 BUGFIX: Now prints "Reading preferences" message when doing so
-#		 MAINTENANCE: Updated AniDB parser in sympathy with AniDB.info's
-#		 changes. AniDB search facility also updated.
+#        manipulate the filename _before_ file extensions are detected.
+#        BUGFIX: Now prints "Reading preferences" message when doing so
+#        MAINTENANCE: Updated AniDB parser in sympathy with AniDB.info's
+#        changes. AniDB search facility also updated.
 #
 #  v2.32 BUGFIX: Now prints newlines at end of messages {{{2
-#		 BUGFIX: Re-worked AniDB parser so that alternative episode titles are
-#		 optional- this was causing some pages to be percieved as blank by the
-#		 script.
-#		 BUGFIX: Updated AniDB parsers in sympathy with changes to AniDB.info
-#		 layout changes
-#		 FEATURE: Added new scheme: XYY. This creates output suitable for the
-#		 --dubious option. E.g. S01E08 -> 108
+#        BUGFIX: Re-worked AniDB parser so that alternative episode titles are
+#        optional- this was causing some pages to be percieved as blank by the
+#        script.
+#        BUGFIX: Updated AniDB parsers in sympathy with changes to AniDB.info
+#        layout changes
+#        FEATURE: Added new scheme: XYY. This creates output suitable for the
+#        --dubious option. E.g. S01E08 -> 108
 #
 #  v2.33 FEATURE: Added new --scheme variant: SXXEYY. I.e. an upper-case
-#		 alternative to the existing sXXeYY
+#        alternative to the existing sXXeYY
 #
 #  v2.34 BUGFIX: Series names which contained punctuation would confuse (or
-#		  crash!) the script if they happened to resemble a regular expression.
-#		  This also prevented it from being able to differentiate between
-#		  numbers in the series title and a file's episode number.
-#		  BUGFIX: Empty lines in config files no longer upset the script
-#		  BUGFIX: TV.com search fixed - the site's HTML layout changed a bit too
-#		  much
-#		  BUGFIX: Shortcut finding is now case-insensitive, so fixed for
-#		  MacOS/Linux/BSD
-#		  FEATURE: Now understands double-episode filenames of the form
-#		  s01.e08-e09 (note the second "e")
-#		  BUGFIX: EpGuides.com parser improved - entries do not have to have
-#		  been aired to be parsed correctly - thanks to Tony White for his patch!
-#		  BUGFIX: "Specials" name extraction didn't check if the "s" in front of
-#		  the episode number was "alone". If it was part of a word, strange
-#		  things happened.
-#		  BUGFIX: Filename extensions defined in the file filter (see --help) is
-#		  no-longer case-sensitive
+#         crash!) the script if they happened to resemble a regular expression.
+#         This also prevented it from being able to differentiate between
+#         numbers in the series title and a file's episode number.
+#         BUGFIX: Empty lines in config files no longer upset the script
+#         BUGFIX: TV.com search fixed - the site's HTML layout changed a bit too
+#         much
+#         BUGFIX: Shortcut finding is now case-insensitive, so fixed for
+#         MacOS/Linux/BSD
+#         FEATURE: Now understands double-episode filenames of the form
+#         s01.e08-e09 (note the second "e")
+#         BUGFIX: EpGuides.com parser improved - entries do not have to have
+#         been aired to be parsed correctly - thanks to Tony White for his patch!
+#         BUGFIX: "Specials" name extraction didn't check if the "s" in front of
+#         the episode number was "alone". If it was part of a word, strange
+#         things happened.
+#         BUGFIX: Filename extensions defined in the file filter (see --help) is
+#         no-longer case-sensitive
 #
 #  v2.35 BUGFIX: SXXEYY parsing had a couple of new bugs from v2.34 - either a
 #        leading space was included with the SXXEYY snippet, or the "S" was
@@ -2315,5 +2320,13 @@ sub readURLfile #{{{
 #          SeriesName/Season 2
 #          SeriesName 2x
 #          SeriesName (2)
+#
+#
+#  v2.52 FEATURE: List episodes missing from the user's collection with
+#        --show-missing. (Thanks Baldur Karlsson!)
+#        MAINTENANCE: --include_series and --exclude_series became 
+#        --include-series and --exclude-series (underscore became hyphen). Old 
+#        option names are still accepted (for compatibility with .tvrenamerrc 
+#        files)
 #
 # vim: set ft=perl ff=unix ts=4 sw=4 sts=4 fdm=marker fdc=4 noet:

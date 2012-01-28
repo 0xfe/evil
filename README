@@ -34,6 +34,7 @@ source $EVIL_HOME/dotfiles/bashrc.`hostname`
 
 $ ln -s $EVIL_HOME/dotfiles/screenrc .screenrc
 $ ln -s $EVIL_HOME/dotfiles/vimrc .vimrc
+$ ln -s $EVIL_HOME/dotfiles/tvnamer.json .tvnamer.json
 
 5) Add the relevant cronjobs to your crontab. (Make sure your SSH keys are
 exported to allow for non-interactive repo updates.)
