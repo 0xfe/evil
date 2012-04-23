@@ -35,6 +35,7 @@ ln_sf("#{EVIL_HOME}/dotfiles/brackup.conf", "#{TARGET}/.brackup.conf")
 if File.exists?(EVIL_WORK)
   mkdir_p("#{TARGET}/.getmail")
   ln_sf("#{EVIL_WORK}/backup/getmailrc", "#{TARGET}/.getmail/getmailrc")
+  ln_sf("#{EVIL_WORK}/TODO", "#{TARGET}/TODO")
 end
 
 # Link binaries
