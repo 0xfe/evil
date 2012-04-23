@@ -16,19 +16,18 @@ $ git clone http://github.com/0xfe/evil.git
 
 export EVIL_HOME=~/c
 
-3) Source dotfiles/bashrc.include.sh into your bashrc. You can add your
-customizations to that file (e.g., in setup_mac).
+3) Source in your includes.
 
-source ~/c/env.sh
-source $EVIL_HOME/dotfiles/bashrc.include.sh
-setup_common
+Set .bashrc to:
 
-Alternatively, you can keep custom .bashrc files for each of your machines in
-dotfiles/ and source them in from (or symlink to) your .bashrc. Make sure that
-these custom files source in bashrc.include.sh.
+  source ~/c/env.sh
+  source $EVIL_HOME/dotfiles/bashrc.mac
 
-source ~/c/env.sh
-source $EVIL_HOME/dotfiles/bashrc.`hostname`
+Set .bash_profile to:
+
+  if [ -f ~/.bashrc ]; then
+    . ~/.bashrc
+  fi
 
 4) Symlink to the other configuration files.
 
