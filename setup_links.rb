@@ -36,7 +36,7 @@ if is_mac?
   ln_sf("/Applications/Sublime Text 2.app/Contents/SharedSupport/bin/subl",
         "#{EVIL_HOME}/bin/subl") if is_mac?
   ln_sf("#{EVIL_HOME}/dotfiles/sublime/mac".
-        "/Library/Application Support/Sublime Text 2/Packages/User")
+        "#{TARGET}/Library/Application Support/Sublime Text 2/Packages/User")
 else
   ln_sf("#{EVIL_HOME}/dotfiles/sublime/linux",
         "#{TARGET}/.config/sublime-text-2/Packages/User")
@@ -46,6 +46,4 @@ if File.exists?(EVIL_WORK)
   mkdir_p("#{TARGET}/.getmail")
   ln_sf("#{EVIL_WORK}/backup/getmailrc", "#{TARGET}/.getmail/getmailrc")
   ln_sf("#{EVIL_WORK}/TODO", "#{TARGET}/TODO")
-  ln_sf("#{EVIL_WORK}/sublime/Packages/User",
-        "#{TARGET}/Library/Application Support/Sublime Text 2/Packages/User") if is_mac?
 end
