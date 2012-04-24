@@ -35,7 +35,7 @@ ln_sf("#{EVIL_HOME}/dotfiles/brackup.conf", "#{TARGET}/.brackup.conf")
 if is_mac?
   ln_sf("/Applications/Sublime Text 2.app/Contents/SharedSupport/bin/subl",
         "#{EVIL_HOME}/bin/subl") if is_mac?
-  ln_sf("#{EVIL_HOME}/dotfiles/sublime/mac".
+  ln_sf("#{EVIL_HOME}/dotfiles/sublime/mac",
         "#{TARGET}/Library/Application Support/Sublime Text 2/Packages/User")
 else
   ln_sf("#{EVIL_HOME}/dotfiles/sublime/linux",
