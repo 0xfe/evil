@@ -36,6 +36,8 @@ if File.exists?(EVIL_WORK)
   mkdir_p("#{TARGET}/.getmail")
   ln_sf("#{EVIL_WORK}/backup/getmailrc", "#{TARGET}/.getmail/getmailrc")
   ln_sf("#{EVIL_WORK}/TODO", "#{TARGET}/TODO")
+  ln_sf("#{EVIL_WORK}/sublime/Packages/User",
+        "#{TARGET}/Library/Application Support/Sublime Text 2/Packages/User") if is_mac?
 end
 
 # Link binaries
