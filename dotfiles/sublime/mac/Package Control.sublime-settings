@@ -1,8 +1,12 @@
 {
-	"auto_upgrade_last_run": 1335200586,
+	"auto_upgrade_last_run": 1335232949,
 	"installed_packages":
 	[
 		"Package Control",
-		"SublimeREPL"
+		"SublimeREPL",
+		"Tag",
+		"Theme - Soda",
+		"TrailingSpaces",
+		"ZenCoding"
 	]
 }

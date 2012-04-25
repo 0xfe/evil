@@ -1,2 +1,5 @@
 [
+  { "keys": ["alt+f"], "command": "move", "args": {"by": "subwords", "forward": true} },
+  { "keys": ["alt+b"], "command": "move", "args": {"by": "subwords", "forward": false} },
+  { "keys": ["alt+v"], "command": "move", "args": {"by": "page", "forward": false} }
 ]
