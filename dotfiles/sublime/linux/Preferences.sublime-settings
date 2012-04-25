@@ -1,6 +1,7 @@
 // Settings in here override those in "Default/Preferences.sublime-settings", and
 // are overridden in turn by file type specific settings.
 {
+  "vintage_ctrl_keys": true,
 	"theme": "Soda Dark.sublime-theme",
   "font_face": "Inconsolata",
   "font_size": 11.0,
