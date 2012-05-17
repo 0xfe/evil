@@ -1,6 +1,7 @@
 {
 	"font_face": "Inconsolata",
 	"font_size": 11.0,
+  "rulers": [80],
 	"tab_size": 2,
 	"theme": "Soda Dark.sublime-theme",
 	"translate_tabs_to_spaces": true,
