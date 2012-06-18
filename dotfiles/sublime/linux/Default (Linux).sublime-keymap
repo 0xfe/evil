@@ -1,2 +1,46 @@
 [
+  { "keys": ["ctrl+["], "command": "exit_insert_mode",
+  "context":
+  [
+    { "key": "setting.command_mode", "operand": true },
+    { "key": "setting.is_widget", "operand": false }
+  ]
+  },
+  { "keys": ["ctrl+]"], "command": "exit_insert_mode",
+  "context":
+  [
+    { "key": "setting.command_mode", "operand": true },
+    { "key": "setting.is_widget", "operand": false }
+  ]
+  },
+  { "keys": ["ctrl+["], "command": "single_selection", "context":
+    [
+      { "key": "num_selections", "operator": "not_equal", "operand": 1 }
+    ]
+  },
+  { "keys": ["ctrl+["], "command": "clear_fields", "context":
+    [
+      { "key": "has_next_field", "operator": "equal", "operand": true }
+    ]
+  },
+  { "keys": ["ctrl+["], "command": "clear_fields", "context":
+    [
+      { "key": "has_prev_field", "operator": "equal", "operand": true }
+    ]
+  },
+  { "keys": ["ctrl+["], "command": "hide_panel", "context":
+    [
+      { "key": "panel_visible", "operator": "equal", "operand": true }
+    ]
+  },
+  { "keys": ["ctrl+["], "command": "hide_overlay", "context":
+    [
+      { "key": "overlay_visible", "operator": "equal", "operand": true }
+    ]
+  },
+  { "keys": ["ctrl+["], "command": "hide_auto_complete", "context":
+    [
+      { "key": "auto_complete_visible", "operator": "equal", "operand": true }
+    ]
+  }
 ]
