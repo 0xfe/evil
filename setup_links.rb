@@ -17,6 +17,14 @@ def is_mac?
   return OS =~ /^darwin/
 end
 
+def symlink(source, dest)
+  if File.exists?(dest)
+    puts "WARNING: #{dest} already exists."
+  else
+    ln_sf(source, dest)
+  end
+end
+
 if ARGV.include?("-f")
   puts "Actually doing stuff."
   include FileUtils::Verbose
@@ -27,23 +35,22 @@ else
   puts
 end
 
-ln_sf("#{EVIL_HOME}/dotfiles/screenrc", "#{TARGET}/.screenrc")
-ln_sf("#{EVIL_HOME}/dotfiles/vimrc", "#{TARGET}/.tvnamer.json")
-ln_sf("#{EVIL_HOME}/dotfiles/tvnamer.json", "#{TARGET}/.tvnamer.json")
-ln_sf("#{EVIL_HOME}/dotfiles/brackup.conf", "#{TARGET}/.brackup.conf")
+symlink("#{EVIL_HOME}/dotfiles/screenrc", "#{TARGET}/.screenrc")
+symlink("#{EVIL_HOME}/dotfiles/vimrc", "#{TARGET}/.tvnamer.json")
+symlink("#{EVIL_HOME}/dotfiles/tvnamer.json", "#{TARGET}/.tvnamer.json")
+symlink("#{EVIL_HOME}/dotfiles/brackup.conf", "#{TARGET}/.brackup.conf")
 
 if is_mac?
-  ln_sf("/Applications/Sublime Text 2.app/Contents/SharedSupport/bin/subl",
-        "#{EVIL_HOME}/bin/subl")
-  ln_sf("#{EVIL_HOME}/dotfiles/sublime/mac",
-        "#{TARGET}/Library/Application Support/Sublime Text 2/Packages/User")
+  symlink("/Applications/Sublime Text 2.app/Contents/SharedSupport/bin/subl",
+        "#{EVIL_HOME}/bin/subl") if is_mac?
+  symlink("#{EVIL_HOME}/dotfiles/sublime/mac",
 else
-  ln_sf("#{EVIL_HOME}/dotfiles/sublime/linux",
+  symlink("#{EVIL_HOME}/dotfiles/sublime/linux",
         "#{TARGET}/.config/sublime-text-2/Packages/User")
 end
 
 if File.exists?(EVIL_WORK)
   mkdir_p("#{TARGET}/.getmail")
-  ln_sf("#{EVIL_WORK}/backup/getmailrc", "#{TARGET}/.getmail/getmailrc")
-  ln_sf("#{EVIL_WORK}/TODO", "#{TARGET}/TODO")
+  symlink("#{EVIL_WORK}/backup/getmailrc", "#{TARGET}/.getmail/getmailrc")
+  symlink("#{EVIL_WORK}/TODO", "#{TARGET}/TODO")
 end
