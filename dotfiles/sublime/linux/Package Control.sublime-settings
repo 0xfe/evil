@@ -1,8 +1,10 @@
 {
-	"auto_upgrade_last_run": 1337177088,
+	"auto_upgrade_last_run": 1352128996,
 	"installed_packages":
 	[
+		"Emmet",
 		"Package Control",
+		"Tag",
 		"Theme - Soda",
 		"TrailingSpaces",
 		"ZenCoding"
