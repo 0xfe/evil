@@ -44,7 +44,6 @@ if is_mac?
   symlink("/Applications/Sublime Text 2.app/Contents/SharedSupport/bin/subl",
         "#{EVIL_HOME}/bin/subl") if is_mac?
   symlink("#{EVIL_HOME}/dotfiles/sublime/mac",
-        "#{TARGET}/Library/Application Support/Sublime Text 2/Packages/User")
 else
   symlink("#{EVIL_HOME}/dotfiles/sublime/linux",
         "#{TARGET}/.config/sublime-text-2/Packages/User")
