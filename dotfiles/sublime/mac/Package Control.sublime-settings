@@ -1,12 +1,14 @@
 {
-	"auto_upgrade_last_run": 1338481357,
+	"auto_upgrade_last_run": null,
 	"installed_packages":
 	[
+		"CoffeeScript",
+		"Emmet",
+		"GitGutter",
 		"Package Control",
 		"SublimeREPL",
 		"Tag",
 		"Theme - Soda",
-		"TrailingSpaces",
-		"ZenCoding"
+		"TrailingSpaces"
 	]
 }
