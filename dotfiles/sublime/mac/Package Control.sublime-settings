@@ -2,13 +2,18 @@
 	"auto_upgrade_last_run": null,
 	"installed_packages":
 	[
+		"Ant Color Scheme",
 		"CoffeeScript",
+		"ColorSchemeSelector",
 		"Emmet",
 		"GitGutter",
 		"Package Control",
 		"SublimeREPL",
 		"Tag",
 		"Theme - Soda",
-		"TrailingSpaces"
+		"Theme - Soda SolarizedDark",
+		"Theme - Sodarized",
+		"TrailingSpaces",
+		"Whitespaces"
 	]
 }

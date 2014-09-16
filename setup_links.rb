@@ -36,7 +36,7 @@ else
 end
 
 symlink("#{EVIL_HOME}/dotfiles/screenrc", "#{TARGET}/.screenrc")
-symlink("#{EVIL_HOME}/dotfiles/vimrc", "#{TARGET}/.tvnamer.json")
+symlink("#{EVIL_HOME}/dotfiles/vimrc", "#{TARGET}/.vimrc")
 symlink("#{EVIL_HOME}/dotfiles/tvnamer.json", "#{TARGET}/.tvnamer.json")
 symlink("#{EVIL_HOME}/dotfiles/brackup.conf", "#{TARGET}/.brackup.conf")
 
