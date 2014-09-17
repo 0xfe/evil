@@ -5,7 +5,7 @@
 #
 #   http://github.com/0xfe/evil/raw/master/lib/evilgit.sh
 
-source $EVIL_HOME/lib/evilgit.sh
+source $EVIL_HOME/lib/git-prompt.sh
 
 # A plain (colorless) prompt.
 function plain_prompt
@@ -47,7 +47,7 @@ function color_prompt
   fi
 
   PS1="$light_blue> $current_tty $u_color\u$brown@${purple}\h$brown:\
-$light_blue\w\n$light_blue> $light_red\$? $cyan\$(evil_git_prompt)\
+    $light_blue\w\n$light_blue> $light_red\$?$cyan$(__git_ps1 " (%s)")\
 $brown"'\$'"$none "
 
   PS2="$dark_gray>$none "
