@@ -30,3 +30,6 @@ groupadd $USER
 useradd -M -d $HOME -g $USER -G sudo,www-data -s /bin/bash $USER
 chown $USER:$USER $HOME
 mount -t vboxsf -o uid=`id -u $USER`,gid=`id -g $USER` home_$USER $HOME
+
+# Make "git status" faster
+git config --global core.preloadindex true
