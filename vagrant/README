@@ -1,0 +1,27 @@
+To turn this up:
+
+Download VirtualBox and Vagrant.
+
+$ cd ~/c
+$ vagrant up
+
+
+To login:
+
+$ vagrant ssh
+foovm$ sudo passwd mohit (Set a password)
+foovm$ sudo su - mohit
+
+To shutdown:
+
+$ vagrant halt
+
+To destroy:
+
+$ vagrant destroy
+
+(The next vagrant up will re-provision)
+
+-------
+
+Provisioning scripts are in bootstrap.sh
