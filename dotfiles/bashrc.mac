@@ -4,14 +4,12 @@
 source $EVIL_HOME/dotfiles/bashrc.include.sh
 
 export EC2_HOME=/opt/ec2-api-tools
-export JAVA_HOME=`/usr/libexec/java_home`
 export EC2_CERT=$HOME/w/amazon/cert-TJLCYRZVXGH47R6HNRSA3JJ62DKT2AOM.pem
 export EC2_PRIVATE_KEY=$HOME/w/amazon/pk-TJLCYRZVXGH47R6HNRSA3JJ62DKT2AOM.pem
 
 # Use x11 as the default Gnuplot/Octave terminal
 export GNUTERM=x11
 
-alias ls='ls -G'
 alias mvim='mvim --remote-tab-silent'
 alias mvimdiff='mvim -d'
 alias tvnamer='/opt/local/Library/Frameworks/Python.framework/Versions/2.7/bin/tvnamer'

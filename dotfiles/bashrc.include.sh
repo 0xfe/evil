@@ -22,9 +22,18 @@ function set_title
   esac
 }
 
-function setup_aliases
+function setup_globals
 {
   # Useful aliases
+  OS=`uname`
+  if [[ "$OS" == "Linux" ]]; then
+    alias ls='ls --color'
+    export JAVA_HOME=/usr/lib/jvm/java-7-openjdk-amd64
+  elif [[ "$OS" == "Darwin" ]]; then
+    alias ls='ls -G'
+    export JAVA_HOME=`/usr/libexec/java_home`
+  fi
+
   alias ll='ls -l'
   alias stitle='screen -X title'
 }
@@ -100,7 +109,7 @@ function setup_common
   # If not running interactively, don't do anything
   [ -z "$PS1" ] && return
 
-  setup_aliases
+  setup_globals
   setup_gpg_agent
   setup_env
   color_prompt

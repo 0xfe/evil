@@ -46,9 +46,13 @@ function color_prompt
     local u_color=$yellow
   fi
 
-  PS1="$light_blue> $current_tty $u_color\u$brown@${purple}\h$brown:\
-    $light_blue\w\n$light_blue> $light_red\$?$cyan$(__git_ps1 " (%s)")\
-$brown"'\$'"$none "
+  GIT_PS1_SHOWDIRTYSTATE=1
+  GIT_PS1_SHOWSTASHSTATE=1
+  GIT_PS1_SHOWUNTRACKEDFILES=1
+  GIT_PS1_SHOWCOLORHINTS=1
+  PS1="$light_blue> $u_color\u$brown@${purple}\h$brown:\
+$light_blue\w\n$light_blue> $light_red\$?$cyan"'$(__git_ps1 " (%s)")'\
+"$brown"' \$'"$none "
 
   PS2="$dark_gray>$none "
 }
