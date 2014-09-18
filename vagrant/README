@@ -22,6 +22,10 @@ $ vagrant destroy
 
 (The next vagrant up will re-provision)
 
+To update:
+
+$ vagrant box update
+
 -------
 
 Provisioning scripts are in bootstrap.sh
