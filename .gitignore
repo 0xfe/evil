@@ -1,0 +1,22 @@
+ruby_sess.*
+.*.swp
+.*.swo
+.swp
+.hi
+.[oa]
+*.pyc
+.svn
+.class
+.vagrant
+# except foo.o which is hand maintained
+!foo.o
+.DS_Store
+*.brackup
+*.brackup.*
+octave-core
+*.sublime-workspace
+*.wav
+*.mp3
+dotfiles/sublime/mac/Package Control.last-run
+dotfiles/sublime/mac/Package Control.system-ca-bundle
+bin/subl
