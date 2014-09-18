@@ -50,6 +50,7 @@ function color_prompt
   GIT_PS1_SHOWSTASHSTATE=1
   GIT_PS1_SHOWUNTRACKEDFILES=1
   GIT_PS1_SHOWCOLORHINTS=1
+  GIT_PS1_SHOWUPSTREAM="verbose"
   PS1="$light_blue> $u_color\u$brown@${purple}\h$brown:\
 $light_blue\w\n$light_blue> $light_red\$?$cyan"'$(__git_ps1 " (%s)")'\
 "$brown"' \$'"$none "
