@@ -2,9 +2,17 @@ To turn this up:
 
 Download VirtualBox and Vagrant.
 
-$ cd ~/c
-$ vagrant up
+$ apt-get install virtualbox
+download 64-bit .deb from vagrantup.com
+$ dpkg -i vagrant.foobar.blah.dpkg
+$ cd ~/c/vagrant
+$ vagrant box add ubuntu/trusty64
 
+You might need to enable VT-X virtualization in the BIOS for 64-bit virtualization. (On HP machines, it is in the security tab of the BIOS menu.)
+---------------
+
+$ cd ~/c/vagrant
+$ vagrant up
 
 To login:
 
@@ -29,3 +37,12 @@ $ vagrant box update
 -------
 
 Provisioning scripts are in bootstrap.sh
+
+--------
+
+To package up the box for redistribution:
+
+$ vagrant package
+
+(writes to package.box)
+

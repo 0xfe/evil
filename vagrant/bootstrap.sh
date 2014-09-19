@@ -29,6 +29,9 @@ apt-get install -y \
 # For AWS
 apt-get install -y openjdk-7-jre-headless
 
+# Docker
+curl -sSL https://get.docker.io/ubuntu/ | sh
+
 groupadd -g $GROUP_ID $USER
 useradd -u $USER_ID -M -d $HOME -g $USER -G sudo,www-data -s /bin/bash $USER
 chown $USER:$USER $HOME
