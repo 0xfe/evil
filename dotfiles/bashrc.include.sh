@@ -32,6 +32,7 @@ function setup_globals
   elif [[ "$OS" == "Darwin" ]]; then
     alias ls='ls -G'
     export JAVA_HOME=`/usr/libexec/java_home`
+    [[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm"
   fi
 
   alias ll='ls -l'
