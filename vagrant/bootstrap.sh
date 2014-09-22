@@ -18,7 +18,7 @@ apt-get install -y \
   build-essential sqlite3 libsqlite3-dev\
   libmysqlclient-dev libxml2-dev libxslt1-dev zlib1g-dev node\
   libssl-dev lighttpd apache2-utils git-core ruby1.9.3 ruby-dev npm\
-  rbenv
+  rbenv nodejs-legacy mysql-client
 
 gem install bundler
 
