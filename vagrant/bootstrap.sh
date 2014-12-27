@@ -32,3 +32,6 @@ usermod -a -G docker mohit
 # Make "git status" faster
 git config --global core.preloadindex true
 
+# For other stuff
+mkdir -p /opt/local
+chown $USER /opt/local

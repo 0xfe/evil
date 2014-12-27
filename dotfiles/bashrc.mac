@@ -17,6 +17,6 @@ alias tvnamer='/opt/local/Library/Frameworks/Python.framework/Versions/2.7/bin/t
 export PATH=~/bin:$EC2_HOME/bin:$HOME/Local/bin:/opt/local/bin:/usr/local/bin:/opt/local/sbin:$PATH
 
 # Use opendiff for git diffs (Need XCode installed)
-git config --global diff.external $EVIL_HOME/bin/gitdiff.sh
+# git config --global diff.external $EVIL_HOME/bin/gitdiff.sh
 
 setup_common
