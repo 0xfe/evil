@@ -2,6 +2,7 @@
 # 0xFE
 
 USER=mohit
+MACUSER=mmuthanna
 HOME=/home/$USER
 USER_ID=5000
 GROUP_ID=5000
@@ -35,3 +36,5 @@ git config --global core.preloadindex true
 # For other stuff
 mkdir -p /opt/local
 chown $USER /opt/local
+mkdir -p /Users
+ln -s $HOME /Users/$MACUSER
