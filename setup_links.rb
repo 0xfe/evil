@@ -37,8 +37,8 @@ end
 
 symlink("#{EVIL_HOME}/dotfiles/screenrc", "#{TARGET}/.screenrc")
 symlink("#{EVIL_HOME}/dotfiles/vimrc", "#{TARGET}/.vimrc")
-symlink("#{EVIL_HOME}/dotfiles/tvnamer.json", "#{TARGET}/.tvnamer.json")
-symlink("#{EVIL_HOME}/dotfiles/brackup.conf", "#{TARGET}/.brackup.conf")
+# symlink("#{EVIL_HOME}/dotfiles/tvnamer.json", "#{TARGET}/.tvnamer.json")
+# symlink("#{EVIL_HOME}/dotfiles/brackup.conf", "#{TARGET}/.brackup.conf")
 
 if is_mac?
   symlink("/Applications/Sublime Text 2.app/Contents/SharedSupport/bin/subl",
@@ -46,6 +46,7 @@ if is_mac?
   symlink("#{EVIL_HOME}/dotfiles/sublime/mac",
           "#{TARGET}/Library/Application Support/Sublime Text 2/Packages/User")
 else
+  mkdir_p("#{TARGET}/.config/sublime-text-2/Packages")
   symlink("#{EVIL_HOME}/dotfiles/sublime/linux",
         "#{TARGET}/.config/sublime-text-2/Packages/User")
 end
