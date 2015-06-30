@@ -1,5 +1,8 @@
 {
 	"auto_upgrade_last_run": null,
+	"in_process_packages":
+	[
+	],
 	"installed_packages":
 	[
 		"Ant Color Scheme",
@@ -7,6 +10,7 @@
 		"ColorSchemeSelector",
 		"Emmet",
 		"GitGutter",
+		"GoSublime",
 		"Package Control",
 		"SublimeREPL",
 		"Tag",

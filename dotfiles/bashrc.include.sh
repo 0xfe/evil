@@ -99,6 +99,9 @@ function setup_env
 
   # Add local scripts to path
   export PATH=$EVIL_HOME/bin:$PATH
+
+  # Golang
+  export GOPATH=~/golang
 }
 
 # -----------------------------------------
