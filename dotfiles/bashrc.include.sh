@@ -114,7 +114,7 @@ function setup_common
   [ -z "$PS1" ] && return
 
   setup_globals
-  setup_gpg_agent
+  # setup_gpg_agent
   setup_env
   color_prompt
   set_title

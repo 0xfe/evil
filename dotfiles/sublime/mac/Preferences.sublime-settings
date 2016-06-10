@@ -3,6 +3,8 @@
 	"font_size": 12.0,
 	"ignored_packages":
 	[
+		"Jade",
+		"Tag",
 		"Theme - Soda"
 	],
 	"tab_size": 2,

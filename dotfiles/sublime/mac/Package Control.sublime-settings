@@ -1,7 +1,9 @@
 {
 	"auto_upgrade_last_run": null,
+	"bootstrapped": true,
 	"in_process_packages":
 	[
+		"Tag"
 	],
 	"installed_packages":
 	[
@@ -11,7 +13,11 @@
 		"Emmet",
 		"GitGutter",
 		"GoSublime",
+		"Jade",
 		"Package Control",
+		"Python Imports Sorter",
+		"Python PEP8 Autoformat",
+		"PythonTidy",
 		"SublimeREPL",
 		"Tag",
 		"Theme - Soda",
