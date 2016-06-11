@@ -40,6 +40,7 @@ symlink("#{EVIL_HOME}/dotfiles/vimrc", "#{TARGET}/.vimrc")
 # symlink("#{EVIL_HOME}/dotfiles/tvnamer.json", "#{TARGET}/.tvnamer.json")
 # symlink("#{EVIL_HOME}/dotfiles/brackup.conf", "#{TARGET}/.brackup.conf")
 
+'''
 if is_mac?
   symlink("/Applications/Sublime Text 2.app/Contents/SharedSupport/bin/subl",
         "#{EVIL_HOME}/bin/subl") if is_mac?
@@ -50,6 +51,7 @@ else
   symlink("#{EVIL_HOME}/dotfiles/sublime/linux",
         "#{TARGET}/.config/sublime-text-2/Packages/User")
 end
+'''
 
 if File.exists?(EVIL_WORK)
   mkdir_p("#{TARGET}/.getmail")
