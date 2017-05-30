@@ -11,14 +11,14 @@ HOME = ENV["HOME"]
 EVIL_HOME = "#{HOME}/c"
 EVIL_WORK = "#{HOME}/w"
 TARGET = HOME
-OS = Config::CONFIG['host_os']
+OS = RbConfig::CONFIG['host_os']
 
 def is_mac?
   return OS =~ /^darwin/
 end
 
 def symlink(source, dest)
-  if File.exists?(dest)
+  if File.exist?(dest)
     puts "WARNING: #{dest} already exists."
   else
     ln_sf(source, dest)
@@ -53,7 +53,7 @@ else
 end
 '''
 
-if File.exists?(EVIL_WORK)
+if File.exist?(EVIL_WORK)
   mkdir_p("#{TARGET}/.getmail")
   symlink("#{EVIL_WORK}/backup/getmailrc", "#{TARGET}/.getmail/getmailrc")
   symlink("#{EVIL_WORK}/TODO", "#{TARGET}/TODO")
