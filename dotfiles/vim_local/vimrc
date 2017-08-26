@@ -46,7 +46,7 @@ set hidden ruler wmnu
 " set imi=0
 
 " I'm usually on a light-on-dark terminal
-set background=dark
+set background=light
 
 " Live incremental search
 set incsearch
