@@ -14,9 +14,13 @@ alias mvim='mvim --remote-tab-silent'
 alias mvimdiff='mvim -d'
 alias tvnamer='/opt/local/Library/Frameworks/Python.framework/Versions/2.7/bin/tvnamer'
 
-export PATH=~/bin:~/homebrew/bin:$EC2_HOME/bin:/opt/local/bin:/opt/local/sbin:$PATH
-
 # Use opendiff for git diffs (Need XCode installed)
 # git config --global diff.external $EVIL_HOME/bin/gitdiff.sh
 
+
+# Bash completion (brew install bash_completion)
+[ -f ~/homebrew/etc/bash_completion ] && . ~/homebrew/etc/bash_completion
+
 setup_common
+
+export PATH=~/bin:~/homebrew/bin:$EC2_HOME/bin:/opt/local/bin:/opt/local/sbin:~/golang/bin:$PATH

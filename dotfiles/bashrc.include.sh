@@ -101,7 +101,10 @@ function setup_env
   export PATH=$EVIL_HOME/bin:$PATH
 
   # Golang
-  export GOPATH=~/golang
+  export GOPATH=~/golang:~/git/qubit
+
+  # Bash completion
+  [ -f /Users/mmuthanna/homebrew/etc/bash_completion ] && . /Users/mmuthanna/homebrew/etc/bash_completion
 }
 
 # -----------------------------------------

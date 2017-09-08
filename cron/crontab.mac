@@ -1,0 +1,1 @@
+35 * * * * /Users/mmuthanna/c/bin/tarsnap-backup-mac.sh 2>&1 >/dev/null
