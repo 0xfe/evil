@@ -27,8 +27,8 @@ gem install bundler
 apt-get install -y openjdk-7-jre-headless
 
 # Docker
-curl -sSL https://get.docker.io/ubuntu/ | sh
-usermod -a -G docker mohit
+# curl -sSL https://get.docker.io/ubuntu/ | sh
+# usermod -a -G docker mohit
 
 # Make "git status" faster
 git config --global core.preloadindex true
