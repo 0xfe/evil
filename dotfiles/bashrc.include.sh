@@ -37,6 +37,7 @@ function setup_globals
 
   alias ll='ls -l'
   alias stitle='screen -X title'
+  alias cdgo='cd ~/golang/src/github.com/qubit-sh'
 }
 
 function setup_gpg_agent
@@ -101,7 +102,7 @@ function setup_env
   export PATH=$EVIL_HOME/bin:$PATH
 
   # Golang
-  export GOPATH=~/golang:~/git/qubit
+  export GOPATH=~/golang
 
   # Bash completion
   [ -f /Users/mmuthanna/homebrew/etc/bash_completion ] && . /Users/mmuthanna/homebrew/etc/bash_completion
