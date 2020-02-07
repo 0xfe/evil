@@ -16,26 +16,14 @@ $ git clone http://github.com/0xfe/evil.git
 
 export EVIL_HOME=~/c
 
-3) Source in your includes.
+3) Symlink shell RC
 
-Set .bashrc to:
-
-  source ~/c/env.sh
-  source $EVIL_HOME/dotfiles/bashrc.mac
-
-Set .bash_profile to:
-
-  if [ -f ~/.bashrc ]; then
-    . ~/.bashrc
-  fi
+$ ln -s $EVIL_HOME/dotfiles/zshrc ~/.zshrc
 
 4) Symlink to the other configuration files.
 
 $ ln -s $EVIL_HOME/dotfiles/screenrc .screenrc
 $ ln -s $EVIL_HOME/dotfiles/vimrc .vimrc
-$ ln -s $EVIL_HOME/dotfiles/tvnamer.json .tvnamer.json
-
-Or better still, run ./setup_links.rb (-f to actually create links.)
 
 5) Add the relevant cronjobs to your crontab. (Make sure your SSH keys are
 exported to allow for non-interactive repo updates.)
