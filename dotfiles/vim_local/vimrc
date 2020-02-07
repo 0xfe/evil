@@ -92,10 +92,11 @@ match ExtraWhitespace /\s\+$\|\t/
 " Ctrk-K 0M for ●
 " Ctrk-K sB for ▪
 " (use :dig for list of digraphs)
-set list listchars=tab:»»,trail:·
+" set list listchars=tab:»»,trail:·
+set list listchars=trail:·
 
 " I like to stick to lines under 80 columns
-au BufWinEnter * let w:m2=matchadd('ErrorMsg', '\%>80v.\+', -1)
+au BufWinEnter * let w:m2=matchadd('ErrorMsg', '\%>120v.\+', -1)
 
 " Enable folding by indentation. (Add guifg and guibg to customize).
 " Use: zc, zo, zC, zO, zR, zM
